@@ -1,5 +1,6 @@
 # Java_Certificado[![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado)
 Projeto Java de Gerenciamentos de Certificado Digital
+JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
