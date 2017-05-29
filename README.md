@@ -4,7 +4,7 @@ Projeto Java de Gerenciamentos de Certificado Digital
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.0.jar (https://github.com/Samuel-Oliveira/Java_NFe/raw/master/java-certificado-1.0.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.0.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.0.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
@@ -15,7 +15,7 @@ Para Iniciar :
 		</repository>
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
-			<artifactId>java-certificado</artifactId>
+			<artifactId>java_certificado</artifactId>
 			<version>1.0</version>
 		</dependency>
 ```
