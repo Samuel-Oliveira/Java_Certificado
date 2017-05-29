@@ -1,4 +1,4 @@
-package br.com.samuelweb.certificado.util;
+package br.com.samuelweb.certificado;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,7 @@ import br.com.samuelweb.certificado.exception.CertificadoException;
  * @author SaMuK
  * 
  */
-public class CertificadoUtil {
+public class CertificadoService {
 	
 	/**
 	 * Metodo Que Inicializa as Informações de Certificado Digital
