@@ -153,7 +153,7 @@ public class CertificadoService {
 					cert.setSenha("");
 					Date dataValidade = DataValidade(cert);
 					if (dataValidade == null) {
-						cert.setNome("(INVÁLIDO)" + aliasKey);
+						cert.setNome("(INVALIDO)" + aliasKey);
 						cert.setVencimento(LocalDate.of(2000, 1, 1));
 						cert.setDiasRestantes(0L);
 						cert.setValido(false);

@@ -24,7 +24,7 @@ public class CertificadoException extends Exception {
 	/**
 	 * Construtor da classe.
 	 * 
-	 * @param code
+	 * @param message
 	 */
 	public CertificadoException(String message) {
 		this((Throwable) null);
