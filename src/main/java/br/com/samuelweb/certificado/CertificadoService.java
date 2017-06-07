@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.apache.commons.httpclient.protocol.Protocol;
 
-import br.com.samuelweb.certificado.Certificado;
-import br.com.samuelweb.certificado.SocketFactoryDinamico;
 import br.com.samuelweb.certificado.exception.CertificadoException;
 
 /**
@@ -64,6 +62,39 @@ public class CertificadoService {
 	}
 
 	/**
+	 * Metodo Que retorna um Certificado do Tipo PFX Bytes
+	 * 
+	 * @param caminhoCertificado
+	 * @param senha
+	 * @return
+	 * @throws CertificadoException
+	 */
+	public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
+
+		Certificado certificado = new Certificado();
+		try {
+			certificado.setArquivoBytes(certificadoBytes);
+			certificado.setSenha(senha);
+			certificado.setTipo(Certificado.ARQUIVO_BYTES);
+
+			KeyStore keyStore = getKeyStore(certificado);
+			Enumeration<String> aliasEnum = keyStore.aliases();
+			String aliasKey = aliasEnum.nextElement();
+
+			certificado.setNome(aliasKey);
+			certificado
+					.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			certificado.setDiasRestantes(diasRestantes(certificado));
+			certificado.setValido(valido(certificado));
+		} catch (KeyStoreException e) {
+			throw new CertificadoException("Erro ao carregar informações do certificado:" + e.getMessage());
+		}
+
+		return certificado;
+
+	}
+
+	/**
 	 * Metodo Que retorna um Certificado do Tipo PFX
 	 * 
 	 * @param caminhoCertificado
@@ -81,7 +112,7 @@ public class CertificadoService {
 
 			KeyStore keyStore = getKeyStore(certificado);
 			Enumeration<String> aliasEnum = keyStore.aliases();
-			String aliasKey = (String) aliasEnum.nextElement();
+			String aliasKey = aliasEnum.nextElement();
 			
 			certificado.setNome(aliasKey);
 			certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
@@ -115,7 +146,7 @@ public class CertificadoService {
 
 			Enumeration<String> aliasEnum = getKeyStore(certificado).aliases();
 			
-			certificado.setNome((String) aliasEnum.nextElement());
+			certificado.setNome(aliasEnum.nextElement());
 			certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 			certificado.setDiasRestantes(diasRestantes(certificado));
 			certificado.setValido(valido(certificado));
@@ -144,7 +175,7 @@ public class CertificadoService {
 			Enumeration<String> aliasEnum = ks.aliases();
 
 			while (aliasEnum.hasMoreElements()) {
-				String aliasKey = (String) aliasEnum.nextElement();
+				String aliasKey = aliasEnum.nextElement();
 
 				if (aliasKey != null) {
 					Certificado cert = new Certificado();
@@ -249,6 +280,11 @@ public class CertificadoService {
 
 				keyStore = KeyStore.getInstance("PKCS12");
 				keyStore.load(new ByteArrayInputStream(getBytesFromInputStream(new FileInputStream(file))), certificado.getSenha().toCharArray());
+				return keyStore;
+			case Certificado.ARQUIVO_BYTES:
+				keyStore = KeyStore.getInstance("pkcs12");
+				keyStore.load(new ByteArrayInputStream(certificado.getArquivoBytes()),
+						certificado.getSenha().toCharArray());
 				return keyStore;
 			case Certificado.A3:
 				System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
