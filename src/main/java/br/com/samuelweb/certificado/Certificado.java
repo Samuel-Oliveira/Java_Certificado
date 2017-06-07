@@ -12,6 +12,7 @@ public class Certificado {
 	
 	public static final String WINDOWS = "windows";
 	public static final String ARQUIVO = "arquivo";
+	public static final String ARQUIVO_BYTES = "arquivo_bytes";
 	public static final String A3 = "a3";
 	
 	private String nome;
@@ -22,6 +23,8 @@ public class Certificado {
 	
 	private String arquivo;
 	
+	private byte[] arquivo_bytes;
+
 	private String senha;
 	
 	private String tipo;
@@ -100,6 +103,21 @@ public class Certificado {
 	 */
 	public void setArquivo(String arquivo) {
 		this.arquivo = arquivo;
+	}
+
+	/**
+	 * @return the arquivo_bytes
+	 */
+	public byte[] getArquivoBytes() {
+		return arquivo_bytes;
+	}
+
+	/**
+	 * @param arquivo_bytes
+	 *            the arquivo_bytes to set
+	 */
+	public void setArquivoBytes(byte[] arquivo_bytes) {
+		this.arquivo_bytes = arquivo_bytes;
 	}
 
 	/**
