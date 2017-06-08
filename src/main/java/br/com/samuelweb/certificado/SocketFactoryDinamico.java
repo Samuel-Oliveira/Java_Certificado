@@ -8,18 +8,16 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.SocketFactory;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -27,177 +25,99 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
-import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
-/**
- * @author Samuel Oliveira
- *
- */
+class SocketFactoryDinamico implements ProtocolSocketFactory {
 
-public class SocketFactoryDinamico implements ProtocolSocketFactory {
+	private SSLContext ssl = null;
+	private X509Certificate certificate;
+	private PrivateKey privateKey;
+	private InputStream fileCacerts;
 
-    private SSLContext ssl = null;
-    private X509Certificate certificate;
-    private PrivateKey privateKey;
-    private InputStream fileCacerts;
-
-    public SocketFactoryDinamico(X509Certificate certificate,
-            PrivateKey privateKey) {
-        this.certificate = certificate;
-        this.privateKey = privateKey;
-    }
-
-    private SSLContext createSSLContext() {
-        try {
-            KeyManager[] keyManagers = createKeyManagers();
-            TrustManager[] trustManagers = createTrustManagers();
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, trustManagers, null);
-
-            return sslContext;
-        } catch (KeyManagementException e) {
-            error(e.toString());
-        } catch (KeyStoreException e) {
-            error(e.toString());
-        } catch (NoSuchAlgorithmException e) {
-            error(e.toString());
-        } catch (CertificateException e) {
-            error(e.toString());
-        } catch (IOException e) {
-            error(e.toString());
-        }
-        return null;
-    }
-
-    private SSLContext getSSLContext() {
-        if (ssl == null) {
-            ssl = createSSLContext();
-        }
-        return ssl;
-    }
+	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts) throws UnrecoverableKeyException, KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+		this.certificate = certificate;
+		this.privateKey = privateKey;
+		this.fileCacerts = fileCacerts;
+		this.ssl = createSSLContext();
+	}
 
     @Override
-    public Socket createSocket(String host, int port, InetAddress localAddress,
-            int localPort, HttpConnectionParams params) throws IOException,
-            UnknownHostException, ConnectTimeoutException {
-        if (params == null) {
-            throw new IllegalArgumentException("Parameters may not be null");
-        }
-        int timeout = params.getConnectionTimeout();
-        SocketFactory socketfactory = getSSLContext().getSocketFactory();
-        if (timeout == 0) {
-            return socketfactory.createSocket(host, port, localAddress,
-                    localPort);
-        }
-
-        Socket socket = socketfactory.createSocket();
-        ((SSLSocket) socket).setEnabledProtocols(new String[] {"SSLv3", "TLSv1"});
-        SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
-        SocketAddress remoteaddr = new InetSocketAddress(host, port);
-        socket.bind(localaddr);
-        try {
-            socket.connect(remoteaddr, timeout);
-        } catch (Exception e) {
-            error(e.toString());
-            throw new ConnectTimeoutException("Possível timeout de conexão", e);
-        }
-
+    public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException {
+        final Socket socket = this.ssl.getSocketFactory().createSocket();
+        ((SSLSocket) socket).setEnabledProtocols(new String[]{"SSLv3","TLSv1"});
+        socket.bind(new InetSocketAddress(localAddress, localPort));
+        socket.connect(new InetSocketAddress(host, port), 60000);
         return socket;
     }
 
     @Override
-    public Socket createSocket(String host, int port, InetAddress clientHost,
-            int clientPort) throws IOException, UnknownHostException {
-        return getSSLContext().getSocketFactory().createSocket(host, port,
-                clientHost, clientPort);
+    public Socket createSocket(final String host, final int port, final InetAddress clientHost, final int clientPort) throws IOException {
+        return this.ssl.getSocketFactory().createSocket(host, port, clientHost, clientPort);
     }
 
     @Override
-    public Socket createSocket(String host, int port) throws IOException,
-            UnknownHostException {
-        return getSSLContext().getSocketFactory().createSocket(host, port);
+    public Socket createSocket(final String host, final int port) throws IOException {
+        return this.ssl.getSocketFactory().createSocket(host, port);
     }
 
-    public Socket createSocket(Socket socket, String host, int port,
-            boolean autoClose) throws IOException, UnknownHostException {
-        return getSSLContext().getSocketFactory().createSocket(socket, host,
-                port, autoClose);
+    private SSLContext createSSLContext() throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
+        final KeyManager[] keyManagers = createKeyManagers();
+        final TrustManager[] trustManagers = createTrustManagers();
+        final SSLContext sslContext = SSLContext.getInstance("TLSv1");
+        sslContext.init(keyManagers, trustManagers, null);
+        return sslContext;
     }
 
-    public KeyManager[] createKeyManagers() {
-        HSKeyManager keyManager = new HSKeyManager(certificate, privateKey);
-
-        return new KeyManager[]{keyManager};
+    private KeyManager[] createKeyManagers() throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+        return new KeyManager[]{new NFKeyManager(certificate, privateKey)};
     }
 
-    public TrustManager[] createTrustManagers() throws KeyStoreException,
-            NoSuchAlgorithmException, CertificateException, IOException {
+    private TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore trustStore = KeyStore.getInstance("JKS");
-
         trustStore.load(fileCacerts, "changeit".toCharArray());
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory
-                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
     }
-
-    class HSKeyManager implements X509KeyManager {
-
-        private X509Certificate certificate;
-        private PrivateKey privateKey;
-
-        public HSKeyManager(X509Certificate certificate, PrivateKey privateKey) {
+    
+    private class NFKeyManager implements X509KeyManager {
+        private final X509Certificate certificate;
+        private final PrivateKey privateKey;
+        
+        NFKeyManager(final X509Certificate certificate, final PrivateKey privateKey) {
             this.certificate = certificate;
             this.privateKey = privateKey;
         }
-
+        
         @Override
-        public String chooseClientAlias(String[] arg0, Principal[] arg1,
-                Socket arg2) {
-            return certificate.getIssuerDN().getName();
+        public String chooseClientAlias(final String[] arg0, final Principal[] arg1, final Socket arg2) {
+            return this.certificate.getIssuerDN().getName();
         }
-
+        
         @Override
-        public String chooseServerAlias(String arg0, Principal[] arg1,
-                Socket arg2) {
+        public String chooseServerAlias(final String arg0, final Principal[] arg1, final Socket arg2) {
             return null;
         }
-
+        
         @Override
-        public X509Certificate[] getCertificateChain(String arg0) {
-            return new X509Certificate[]{certificate};
+        public X509Certificate[] getCertificateChain(final String arg0) {
+            return new X509Certificate[]{this.certificate};
         }
-
+        
         @Override
-        public String[] getClientAliases(String arg0, Principal[] arg1) {
-            return new String[]{certificate.getIssuerDN().getName()};
+        public String[] getClientAliases(final String arg0, final Principal[] arg1) {
+            return new String[]{this.certificate.getIssuerDN().getName()};
         }
-
+        
         @Override
-        public PrivateKey getPrivateKey(String arg0) {
-            return privateKey;
+        public PrivateKey getPrivateKey(final String arg0) {
+            return this.privateKey;
         }
-
+        
         @Override
-        public String[] getServerAliases(String arg0, Principal[] arg1) {
+        public String[] getServerAliases(final String arg0, final Principal[] arg1) {
             return null;
         }
     }
-
-    public void setFileCacerts(InputStream fileCacerts) {
-        this.fileCacerts = fileCacerts;
-    }
-
-    /**
-     * Log Error.
-     *
-     * @param log
-     */
-    private static void error(String log) {
-        System.out.println("ERROR: " + log);
-    }
-    
 }
-

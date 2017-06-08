@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -50,12 +51,11 @@ public class CertificadoService {
 			KeyStore keyStore = getKeyStore(certificado);
 			X509Certificate certificate = getCertificate(certificado, keyStore);
 			PrivateKey privateKey = (PrivateKey) keyStore.getKey(certificado.getNome(), certificado.getSenha().toCharArray());
-			SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey);
-			socketFactory.setFileCacerts(cacert);
+			SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert);
 			Protocol protocol = new Protocol("https", socketFactory, 443);
 			Protocol.registerProtocol("https", protocol);
 			
-		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
 			throw new CertificadoException(e.getMessage());
 		}
 		
@@ -64,7 +64,7 @@ public class CertificadoService {
 	/**
 	 * Metodo Que retorna um Certificado do Tipo PFX Bytes
 	 * 
-	 * @param caminhoCertificado
+	 * @param certificadoBytes
 	 * @param senha
 	 * @return
 	 * @throws CertificadoException

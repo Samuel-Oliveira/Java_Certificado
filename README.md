@@ -5,7 +5,7 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.0.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.0.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.1.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.1.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
@@ -17,7 +17,7 @@ Para Iniciar :
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
 			<artifactId>java_certificado</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 ```
 
@@ -27,7 +27,11 @@ ________________________________________________________________________________
 
 # Historico de Versões
 
-## v1.0 - 29-05-2017
+## v1.1 - 08/06/2017
+- Refeitas Configurações do Socket Dinamico
+- Adicionacio Para aceitar Arquivos PFX como Byte[]
+
+## v1.0 - 29/05/2017
 - Versão Inicial Do Sistema
 
 Outras Duvidas Entrar em Contato samuk.exe@hotmail.com
