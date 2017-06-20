@@ -64,7 +64,7 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
     private SSLContext createSSLContext() throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
         final KeyManager[] keyManagers = createKeyManagers();
         final TrustManager[] trustManagers = createTrustManagers();
-        final SSLContext sslContext = SSLContext.getInstance("TLSv1");
+        final SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(keyManagers, trustManagers, null);
         return sslContext;
     }
