@@ -37,7 +37,7 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-20-06-2017";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-21-06-2017";
 	private static String cacert;
 
 	public static void main(String[] args) {
@@ -245,6 +245,12 @@ public class CacertUtil {
 		listaWebServices.add("cte.fazenda.pr.gov.br");
 		listaWebServices.add("cte.svrs.rs.gov.br");
 		listaWebServices.add("www1.cte.fazenda.gov.br");
+		
+		//MDFE HOMOLOGACAO
+		listaWebServices.add("mdfe-homologacao.svrs.rs.gov.br");
+		
+		//MDFE PRODUCAO
+		listaWebServices.add("mdfe.svrs.rs.gov.br");
 
 		return listaWebServices;
 	}
