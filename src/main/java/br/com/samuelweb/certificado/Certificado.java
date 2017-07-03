@@ -20,7 +20,7 @@ public class Certificado {
 	private LocalDate vencimento;
 	
 	private Long diasRestantes;
-	
+
 	private String arquivo;
 	
 	private byte[] arquivo_bytes;
@@ -34,6 +34,16 @@ public class Certificado {
 	private String marcaA3;
 	
 	private boolean valido;
+
+	private boolean ativarProperties = false;
+
+	public boolean isAtivarProperties() {
+		return ativarProperties;
+	}
+
+	public void setAtivarProperties(boolean ativarProperties) {
+		this.ativarProperties = ativarProperties;
+	}
 
 	/**
 	 * @return the nome

@@ -1,21 +1,10 @@
 package br.com.samuelweb.certificado;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
+import br.com.samuelweb.certificado.exception.CertificadoException;
+import org.apache.commons.httpclient.protocol.Protocol;
+
+import java.io.*;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
@@ -24,10 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-
-import org.apache.commons.httpclient.protocol.Protocol;
-
-import br.com.samuelweb.certificado.exception.CertificadoException;
 
 /**
  * Classe Responsavel Por Carregar os Certificados Do Repositorio do Windows
@@ -51,10 +36,14 @@ public class CertificadoService {
 			KeyStore keyStore = getKeyStore(certificado);
 			X509Certificate certificate = getCertificate(certificado, keyStore);
 			PrivateKey privateKey = (PrivateKey) keyStore.getKey(certificado.getNome(), certificado.getSenha().toCharArray());
-			SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert);
-			Protocol protocol = new Protocol("https", socketFactory, 443);
-			Protocol.registerProtocol("https", protocol);
-			
+			if(certificado.isAtivarProperties()){
+				CertificadoProperties.inicia(certificado, cacert);
+			}else{
+				SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert);
+				Protocol protocol = new Protocol("https", socketFactory, 443);
+				Protocol.registerProtocol("https", protocol);
+			}
+
 		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
 			throw new CertificadoException(e.getMessage());
 		}
