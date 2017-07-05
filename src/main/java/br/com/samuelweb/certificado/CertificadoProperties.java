@@ -24,7 +24,7 @@ public class CertificadoProperties {
         System.clearProperty("javax.net.ssl.keyStorePassword");
         System.clearProperty("javax.net.ssl.trustStore");
 
-        System.setProperty("jdk.tls.client.protocols", "TLSv1"); // Servidor do	Sefaz RS
+        System.setProperty("jdk.tls.client.protocols", "TLSv1.2"); // Servidor do	Sefaz RS
 
         if(certificado.getTipo().equals(Certificado.WINDOWS)){
             System.setProperty("javax.net.ssl.keyStoreProvider", "SunMSCAPI");

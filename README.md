@@ -5,7 +5,7 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.2.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.2.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.4.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.4.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
@@ -17,7 +17,7 @@ Para Iniciar :
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
 			<artifactId>java_certificado</artifactId>
-			<version>1.2</version>
+			<version>1.4</version>
 		</dependency>
 ```
 
@@ -27,6 +27,11 @@ ________________________________________________________________________________
 
 # Historico de Versões
 
+## v1.4 - 05/07/2017
+- Alterado COnfigurações Para Nfe 4.00
+
+## v1.3 - 04/07/2017
+- Adicionado opção de registrar certificados atraves do properties
 
 ## v1.2 - 20/06/2017
 - Correções do Socket Dinamico para Aceitar o WS HOmologação Goias.

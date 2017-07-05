@@ -3,31 +3,14 @@
  */
 package br.com.samuelweb.certificado.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import javax.net.ssl.*;
+import java.io.*;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * @author Samuel Oliveira
@@ -37,7 +20,7 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-21-06-2017";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-04-07-2017";
 	private static String cacert;
 
 	public static void main(String[] args) {
