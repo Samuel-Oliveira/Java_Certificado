@@ -20,11 +20,13 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-04-07-2017";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-Rafael";
 	private static String cacert;
 
 	public static void main(String[] args) {
-		gerarCacert(null, CACERT);
+		List<String> lista = new ArrayList<>();
+		lista.add("ymbdlb.santander.com.br");
+		gerarCacert(lista, CACERT);
 	}
 
 	/**
