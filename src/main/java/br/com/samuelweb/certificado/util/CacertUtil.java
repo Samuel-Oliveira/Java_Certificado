@@ -20,13 +20,11 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-Rafael";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-25-08-2017";
 	private static String cacert;
 
 	public static void main(String[] args) {
-		List<String> lista = new ArrayList<>();
-		lista.add("ymbdlb.santander.com.br");
-		gerarCacert(lista, CACERT);
+		gerarCacert(null, CACERT);
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class CacertUtil {
 			} 
 			
 			if(!arquivoCacert.isFile()) {
-				File dir = new File(System.getProperty("java.home") + File.separatorChar + "lib" + File.separatorChar + "security");
+				File dir = new File("C:\\Program Files\\Java\\jre1.8.0_141" + File.separatorChar + "lib" + File.separatorChar + "security");
 				arquivoCacert = new File(dir, "cacerts");
 			}
 
@@ -160,42 +158,42 @@ public class CacertUtil {
 
 	public static List<String> listaPadraoWebService() {
 		List<String> listaWebServices = new ArrayList<>();
-		// NFE HOMOLOGACAO
+		 //NFE HOMOLOGACAO
 		listaWebServices.add("homnfe.sefaz.am.gov.br");
 		listaWebServices.add("hnfe.sefaz.ba.gov.br");
 		listaWebServices.add("nfeh.sefaz.ce.gov.br");
 		listaWebServices.add("app.sefaz.es.gov.br");
 		listaWebServices.add("homolog.sefaz.go.gov.br");
 		listaWebServices.add("hnfe.fazenda.mg.gov.br");
-		listaWebServices.add("homologacao.nfe.ms.gov.br");
+		listaWebServices.add("homologacao.esocial.ms.gov.br");
 		listaWebServices.add("homologacao.sefaz.mt.gov.br");
 		listaWebServices.add("nfehomolog.sefaz.pe.gov.br");
-		listaWebServices.add("homologacao.nfe.fazenda.pr.gov.br");
-		listaWebServices.add("nfe-homologacao.sefazrs.rs.gov.br");
+		listaWebServices.add("homologacao.esocial.fazenda.pr.gov.br");
+		listaWebServices.add("esocial-homologacao.sefazrs.rs.gov.br");
 		listaWebServices.add("cad.sefazrs.rs.gov.br");
-		listaWebServices.add("homologacao.nfe.fazenda.sp.gov.br");
+		listaWebServices.add("homologacao.esocial.fazenda.sp.gov.br");
 		listaWebServices.add("hom.sefazvirtual.fazenda.gov.br");
-		listaWebServices.add("nfe-homologacao.svrs.rs.gov.br");
+		listaWebServices.add("esocial-homologacao.svrs.rs.gov.br");
 		listaWebServices.add("cad.svrs.rs.gov.br");
 		listaWebServices.add("hom.svc.fazenda.gov.br");
-		listaWebServices.add("hom.nfe.fazenda.gov.br");
+		listaWebServices.add("hom.esocial.fazenda.gov.br");
 
 		// NFE PRODUCAO
-		listaWebServices.add("nfe.sefaz.am.gov.br");
-		listaWebServices.add("nfe.sefaz.ba.gov.br");
-		listaWebServices.add("nfe.sefaz.ce.gov.br");
-		listaWebServices.add("nfe.sefaz.go.gov.br");
-		listaWebServices.add("nfe.fazenda.mg.gov.br");
-		listaWebServices.add("nfe.fazenda.ms.gov.br");
-		listaWebServices.add("nfe.sefaz.mt.gov.br");
-		listaWebServices.add("nfe.sefaz.pe.gov.br");
-		listaWebServices.add("nfe.fazenda.pr.gov.br");
-		listaWebServices.add("nfe.sefazrs.rs.gov.br");
-		listaWebServices.add("nfe.fazenda.sp.gov.br");
-		listaWebServices.add("www.sefazvirtual.fazenda.gov.br");
-		listaWebServices.add("nfe.svrs.rs.gov.br");
-		listaWebServices.add("www.svc.fazenda.gov.br");
-		listaWebServices.add("www.nfe.fazenda.gov.br");
+		listaWebServices.add("esocial.sefaz.am.gov.br");
+		listaWebServices.add("esocial.sefaz.ba.gov.br");
+		listaWebServices.add("esocial.sefaz.ce.gov.br");
+		listaWebServices.add("esocial.sefaz.go.gov.br");
+		listaWebServices.add("esocial.fazenda.mg.gov.br");
+		listaWebServices.add("esocial.fazenda.ms.gov.br");
+		listaWebServices.add("esocial.sefaz.mt.gov.br");
+		listaWebServices.add("esocial.sefaz.pe.gov.br");
+		listaWebServices.add("esocial.fazenda.pr.gov.br");
+		listaWebServices.add("esocial.sefazrs.rs.gov.br");
+		listaWebServices.add("esocial.fazenda.sp.gov.br");
+		listaWebServices.add("sefazvirtual.fazenda.gov.br");
+		listaWebServices.add("esocial.svrs.rs.gov.br");
+		listaWebServices.add("svc.fazenda.gov.br");
+		listaWebServices.add("esocial.fazenda.gov.br");
 
 		// NFCE HOMOLOGACAO
 		listaWebServices.add("homnfce.sefaz.am.gov.br");
@@ -230,12 +228,18 @@ public class CacertUtil {
 		listaWebServices.add("cte.fazenda.pr.gov.br");
 		listaWebServices.add("cte.svrs.rs.gov.br");
 		listaWebServices.add("www1.cte.fazenda.gov.br");
-		
+
 		//MDFE HOMOLOGACAO
 		listaWebServices.add("mdfe-homologacao.svrs.rs.gov.br");
-		
+
 		//MDFE PRODUCAO
 		listaWebServices.add("mdfe.svrs.rs.gov.br");
+
+		//eSOCIAL Homologação
+		listaWebServices.add("webservices.producaorestrita.esocial.gov.br");
+
+		//eSOCIAL Produção
+		listaWebServices.add("webservices.esocial.gov.br");
 
 		return listaWebServices;
 	}
