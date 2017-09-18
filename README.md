@@ -5,19 +5,19 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.4.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.4.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.5.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.5.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
 	    <repository>
-			<name>Repositorio Autocom SnapShot</name>
+			<name>Repositorio Autocom</name>
 			<id>Snapshot</id>
 			<url>http://www.autocomsistemas.com.br:8081/nexus/content/repositories/autocom/</url>
 		</repository>
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
 			<artifactId>java_certificado</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 		</dependency>
 ```
 
@@ -26,6 +26,10 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 
 # Historico de Versões
+
+## v1.4 - 18/09/2017
+- Adicionado Parametro para Alterar Protocolo SSL
+- Corrigido erro de A3.
 
 ## v1.4 - 05/07/2017
 - Alterado COnfigurações Para Nfe 4.00

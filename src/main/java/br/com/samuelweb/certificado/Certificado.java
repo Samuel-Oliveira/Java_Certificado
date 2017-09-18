@@ -13,6 +13,7 @@ public class Certificado {
 	public static final String WINDOWS = "windows";
 	public static final String ARQUIVO = "arquivo";
 	public static final String ARQUIVO_BYTES = "arquivo_bytes";
+	public static final String TSLv1_2 = "TLSv1.2";
 	public static final String A3 = "a3";
 	
 	private String nome;
@@ -23,7 +24,7 @@ public class Certificado {
 
 	private String arquivo;
 	
-	private byte[] arquivo_bytes;
+	private byte[] arquivoBytes;
 
 	private String senha;
 	
@@ -37,12 +38,22 @@ public class Certificado {
 
 	private boolean ativarProperties = false;
 
+	private String sslProtocol = TSLv1_2;
+
 	public boolean isAtivarProperties() {
 		return ativarProperties;
 	}
 
 	public void setAtivarProperties(boolean ativarProperties) {
 		this.ativarProperties = ativarProperties;
+	}
+
+	public String getSslProtocol() {
+		return sslProtocol;
+	}
+
+	public void setSslProtocol(String sslProtocol) {
+		this.sslProtocol = sslProtocol;
 	}
 
 	/**
@@ -119,7 +130,7 @@ public class Certificado {
 	 * @return the arquivo_bytes
 	 */
 	public byte[] getArquivoBytes() {
-		return arquivo_bytes;
+		return arquivoBytes;
 	}
 
 	/**
@@ -127,7 +138,7 @@ public class Certificado {
 	 *            the arquivo_bytes to set
 	 */
 	public void setArquivoBytes(byte[] arquivo_bytes) {
-		this.arquivo_bytes = arquivo_bytes;
+		this.arquivoBytes = arquivo_bytes;
 	}
 
 	/**

@@ -39,7 +39,7 @@ public class CertificadoService {
 			if(certificado.isAtivarProperties()){
 				CertificadoProperties.inicia(certificado, cacert);
 			}else{
-				SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert);
+				SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert, certificado.getSslProtocol());
 				Protocol protocol = new Protocol("https", socketFactory, 443);
 				Protocol.registerProtocol("https", protocol);
 			}
@@ -254,7 +254,7 @@ public class CertificadoService {
 	 */
 	public static KeyStore getKeyStore(Certificado certificado) throws CertificadoException {
 		try {
-			KeyStore keyStore;
+			KeyStore keyStore = null;
 
 			switch (certificado.getTipo()) {
 			case Certificado.WINDOWS:
@@ -280,7 +280,10 @@ public class CertificadoService {
 				InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3());
 				Provider p = new sun.security.pkcs11.SunPKCS11(conf);
 				Security.addProvider(p);
-				keyStore = KeyStore.getInstance("pkcs11",p);
+				if(keyStore.getProvider() == null){
+					keyStore = KeyStore.getInstance("pkcs11", p);
+				}
+
 				keyStore.load(null, certificado.getSenha().toCharArray());
 				return keyStore;
 			default:

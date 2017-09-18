@@ -23,17 +23,16 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
 	private PrivateKey privateKey;
 	private InputStream fileCacerts;
 
-	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts) throws UnrecoverableKeyException, KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol) throws UnrecoverableKeyException, KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 		this.certificate = certificate;
 		this.privateKey = privateKey;
 		this.fileCacerts = fileCacerts;
-		this.ssl = createSSLContext();
+		this.ssl = createSSLContext(sslProtocol);
 	}
 
     @Override
     public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException {
         final Socket socket = this.ssl.getSocketFactory().createSocket();
-        ((SSLSocket) socket).setEnabledProtocols(new String[]{"TLSv1.2"});
         socket.bind(new InetSocketAddress(localAddress, localPort));
         socket.connect(new InetSocketAddress(host, port), 60000);
         return socket;
@@ -49,10 +48,10 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         return this.ssl.getSocketFactory().createSocket(host, port);
     }
 
-    private SSLContext createSSLContext() throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
+    private SSLContext createSSLContext(String sslProtocol) throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
         final KeyManager[] keyManagers = createKeyManagers();
         final TrustManager[] trustManagers = createTrustManagers();
-        final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        final SSLContext sslContext = SSLContext.getInstance(sslProtocol);
         sslContext.init(keyManagers, trustManagers, null);
         return sslContext;
     }
