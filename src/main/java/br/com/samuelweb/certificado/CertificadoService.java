@@ -224,6 +224,39 @@ public class CertificadoService {
     }
 
     /**
+     * Retorna a Lista De Certificados A3
+     *
+     * @return
+     * @throws CertificadoException
+     */
+    public static List<String> listaAliasCertificadosA3(String marca, String dll, String senha) throws CertificadoException {
+
+        try {
+            List<String> listaCert = new ArrayList<>(20);
+            Certificado certificado = new Certificado();
+            certificado.setTipo(Certificado.A3);
+            certificado.setMarcaA3(marca);
+            certificado.setSenha(senha);
+            certificado.setDllA3(dll);
+            certificado.setTipo(Certificado.A3);
+
+            Enumeration<String> aliasEnum = getKeyStore(certificado).aliases();
+
+            while (aliasEnum.hasMoreElements()) {
+                String aliasKey = aliasEnum.nextElement();
+                if (aliasKey != null) {
+                    listaCert.add(aliasKey);
+                }
+            }
+
+            return listaCert;
+        } catch (KeyStoreException ex) {
+            throw new CertificadoException("Erro ao Carregar Certificados A3:" + ex.getMessage());
+        }
+
+    }
+
+    /**
      * Método  que retorna a Data De Validade Do Certificado Digital
      *
      * @param certificado
@@ -307,7 +340,8 @@ public class CertificadoService {
                     InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3());
                     Provider p = new sun.security.pkcs11.SunPKCS11(conf);
                     Security.addProvider(p);
-                    if (keyStore != null && keyStore.getProvider() == null) {
+                    keyStore = KeyStore.getInstance("pkcs11");
+                    if (keyStore.getProvider() == null) {
                         keyStore = KeyStore.getInstance("pkcs11", p);
                     }
 

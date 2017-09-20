@@ -30,6 +30,8 @@ ________________________________________________________________________________
 ## v1.4 - 18/09/2017
 - Adicionado Parametro para Alterar Protocolo SSL
 - Corrigido erro de A3.
+- Adicionado A3 com COnfiguração por Alias
+- Adicionado Metodo que lista A3
 
 ## v1.4 - 05/07/2017
 - Alterado COnfigurações Para Nfe 4.00
