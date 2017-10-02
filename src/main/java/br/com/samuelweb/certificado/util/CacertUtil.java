@@ -20,7 +20,7 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-25-08-2017";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-02-10-2017";
 	private static String cacert;
 
 	public static void main(String[] args) {
@@ -165,35 +165,38 @@ public class CacertUtil {
 		listaWebServices.add("app.sefaz.es.gov.br");
 		listaWebServices.add("homolog.sefaz.go.gov.br");
 		listaWebServices.add("hnfe.fazenda.mg.gov.br");
-		listaWebServices.add("homologacao.esocial.ms.gov.br");
+		listaWebServices.add("homologacao.nfe.ms.gov.br");
 		listaWebServices.add("homologacao.sefaz.mt.gov.br");
 		listaWebServices.add("nfehomolog.sefaz.pe.gov.br");
+		listaWebServices.add("homologacao.nfe.fazenda.pr.gov.br");
+		listaWebServices.add("nfe-homologacao.sefazrs.rs.gov.br");
 		listaWebServices.add("homologacao.esocial.fazenda.pr.gov.br");
-		listaWebServices.add("esocial-homologacao.sefazrs.rs.gov.br");
 		listaWebServices.add("cad.sefazrs.rs.gov.br");
-		listaWebServices.add("homologacao.esocial.fazenda.sp.gov.br");
+		listaWebServices.add("homologacao.nfe.fazenda.sp.gov.br");
 		listaWebServices.add("hom.sefazvirtual.fazenda.gov.br");
-		listaWebServices.add("esocial-homologacao.svrs.rs.gov.br");
+		listaWebServices.add("nfe-homologacao.svrs.rs.gov.br");
 		listaWebServices.add("cad.svrs.rs.gov.br");
 		listaWebServices.add("hom.svc.fazenda.gov.br");
-		listaWebServices.add("hom.esocial.fazenda.gov.br");
+		listaWebServices.add("hom.nfe.fazenda.gov.br");
 
 		// NFE PRODUCAO
-		listaWebServices.add("esocial.sefaz.am.gov.br");
-		listaWebServices.add("esocial.sefaz.ba.gov.br");
-		listaWebServices.add("esocial.sefaz.ce.gov.br");
-		listaWebServices.add("esocial.sefaz.go.gov.br");
-		listaWebServices.add("esocial.fazenda.mg.gov.br");
-		listaWebServices.add("esocial.fazenda.ms.gov.br");
-		listaWebServices.add("esocial.sefaz.mt.gov.br");
-		listaWebServices.add("esocial.sefaz.pe.gov.br");
-		listaWebServices.add("esocial.fazenda.pr.gov.br");
-		listaWebServices.add("esocial.sefazrs.rs.gov.br");
-		listaWebServices.add("esocial.fazenda.sp.gov.br");
+		listaWebServices.add("nfe.sefaz.am.gov.br");
+		listaWebServices.add("nfe.sefaz.ba.gov.br");
+		listaWebServices.add("nfe.sefaz.ce.gov.br");
+		listaWebServices.add("nfe.sefaz.go.gov.br");
+		listaWebServices.add("nfe.fazenda.mg.gov.br");
+		listaWebServices.add("nfe.fazenda.ms.gov.br");
+		listaWebServices.add("nfe.sefaz.mt.gov.br");
+		listaWebServices.add("nfe.sefaz.pe.gov.br");
+		listaWebServices.add("nfe.fazenda.pr.gov.br");
+		listaWebServices.add("nfe.sefazrs.rs.gov.br");
+		listaWebServices.add("nfe.fazenda.sp.gov.br");
+		listaWebServices.add("www.sefazvirtual.fazenda.gov.br");
+		listaWebServices.add("nfe.svrs.rs.gov.br");
+		listaWebServices.add("www.svc.fazenda.gov.br");
+		listaWebServices.add("www.nfe.fazenda.gov.br");
 		listaWebServices.add("sefazvirtual.fazenda.gov.br");
-		listaWebServices.add("esocial.svrs.rs.gov.br");
 		listaWebServices.add("svc.fazenda.gov.br");
-		listaWebServices.add("esocial.fazenda.gov.br");
 
 		// NFCE HOMOLOGACAO
 		listaWebServices.add("homnfce.sefaz.am.gov.br");
