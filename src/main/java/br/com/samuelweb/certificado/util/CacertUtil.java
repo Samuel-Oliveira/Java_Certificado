@@ -20,7 +20,7 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-02-10-2017";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-26-01-2018";
 	private static String cacert;
 
 	public static void main(String[] args) {
@@ -51,7 +51,7 @@ public class CacertUtil {
 			} 
 			
 			if(!arquivoCacert.isFile()) {
-				File dir = new File("C:\\Program Files\\Java\\jre1.8.0_141" + File.separatorChar + "lib" + File.separatorChar + "security");
+				File dir = new File("C:\\Program Files\\Java\\jre1.8.0_161" + File.separatorChar + "lib" + File.separatorChar + "security");
 				arquivoCacert = new File(dir, "cacerts");
 			}
 
@@ -242,7 +242,15 @@ public class CacertUtil {
 		listaWebServices.add("webservices.producaorestrita.esocial.gov.br");
 
 		//eSOCIAL Produção
-		listaWebServices.add("webservices.esocial.gov.br");
+		listaWebServices.add("webservices.consulta.esocial.gov.br");
+		listaWebServices.add("webservices.envio.esocial.gov.br");
+
+
+		//EFD-REINF Homologação
+		listaWebServices.add("preprodefdreinf.receita.fazenda.gov.br");
+
+		//EFD-REINF Produção
+//		listaWebServices.add("");
 
 		return listaWebServices;
 	}

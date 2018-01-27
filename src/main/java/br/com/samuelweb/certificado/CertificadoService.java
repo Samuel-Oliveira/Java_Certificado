@@ -5,6 +5,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 
 import java.io.*;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
@@ -331,7 +332,7 @@ public class CertificadoService {
                     keyStore.load(new ByteArrayInputStream(getBytesFromInputStream(new FileInputStream(file))), certificado.getSenha().toCharArray());
                     return keyStore;
                 case Certificado.ARQUIVO_BYTES:
-                    keyStore = KeyStore.getInstance("pkcs12");
+                    keyStore = KeyStore.getInstance("PKCS12");
                     keyStore.load(new ByteArrayInputStream(certificado.getArquivoBytes()),
                             certificado.getSenha().toCharArray());
                     return keyStore;
@@ -340,9 +341,9 @@ public class CertificadoService {
                     InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3());
                     Provider p = new sun.security.pkcs11.SunPKCS11(conf);
                     Security.addProvider(p);
-                    keyStore = KeyStore.getInstance("pkcs11");
+                    keyStore = KeyStore.getInstance("PKCS11");
                     if (keyStore.getProvider() == null) {
-                        keyStore = KeyStore.getInstance("pkcs11", p);
+                        keyStore = KeyStore.getInstance("PKCS11", p);
                     }
 
                     keyStore.load(null, certificado.getSenha().toCharArray());
@@ -367,7 +368,12 @@ public class CertificadoService {
     public static X509Certificate getCertificate(Certificado certificado, KeyStore keystore) throws CertificadoException {
         try {
 
-            return (X509Certificate) keystore.getCertificate(certificado.getNome());
+            //Inclui todas as Cadeias ao Certificado
+            Certificate[] certificates = keystore.getCertificateChain(certificado.getNome());
+            X509Certificate x509Certificates = (X509Certificate) keystore.getCertificate(certificado.getNome());
+            System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
+
+            return x509Certificates;
 
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro Ao pegar X509Certificate: " + e.getMessage());
