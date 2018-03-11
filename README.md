@@ -5,7 +5,7 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.5.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.5.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.6.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.6.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
@@ -17,7 +17,7 @@ Para Iniciar :
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
 			<artifactId>java_certificado</artifactId>
-			<version>1.5</version>
+			<version>1.6</version>
 		</dependency>
 ```
 
@@ -27,7 +27,10 @@ ________________________________________________________________________________
 
 # Historico de Versões
 
-## v1.4 - 18/09/2017
+## v1.6 - 11/03/2018
+- Corrigido erro de Unknow CA
+
+## v1.5 - 18/09/2017
 - Adicionado Parametro para Alterar Protocolo SSL
 - Corrigido erro de A3.
 - Adicionado A3 com COnfiguração por Alias

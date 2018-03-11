@@ -5,7 +5,6 @@ import org.apache.commons.httpclient.protocol.Protocol;
 
 import java.io.*;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
@@ -39,7 +38,7 @@ public class CertificadoService {
             if (certificado.isAtivarProperties()) {
                 CertificadoProperties.inicia(certificado, cacert);
             } else {
-                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert, certificado.getSslProtocol());
+                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert, certificado.getSslProtocol(), keyStore, certificado.getNome());
                 Protocol protocol = new Protocol("https", socketFactory, 443);
                 Protocol.registerProtocol("https", protocol);
             }
@@ -264,7 +263,7 @@ public class CertificadoService {
      * @return
      * @throws CertificadoException
      */
-    public static Date DataValidade(Certificado certificado) throws CertificadoException {
+    private static Date DataValidade(Certificado certificado) throws CertificadoException {
 
         KeyStore keyStore = getKeyStore(certificado);
         X509Certificate certificate = getCertificate(certificado, keyStore);
@@ -279,7 +278,7 @@ public class CertificadoService {
      * @return
      * @throws CertificadoException
      */
-    public static Long diasRestantes(Certificado certificado) throws CertificadoException {
+    private static Long diasRestantes(Certificado certificado) throws CertificadoException {
 
         Date data = DataValidade(certificado);
         if (data == null) {
@@ -296,13 +295,9 @@ public class CertificadoService {
      * @return
      * @throws CertificadoException
      */
-    public static boolean valido(Certificado certificado) throws CertificadoException {
+    private static boolean valido(Certificado certificado) throws CertificadoException {
 
-        if (DataValidade(certificado) != null && DataValidade(certificado).after(new Date())) {
-            return true;
-        } else {
-            return false;
-        }
+        return DataValidade(certificado) != null && DataValidade(certificado).after(new Date());
 
     }
 
@@ -315,7 +310,7 @@ public class CertificadoService {
      */
     public static KeyStore getKeyStore(Certificado certificado) throws CertificadoException {
         try {
-            KeyStore keyStore = null;
+            KeyStore keyStore;
 
             switch (certificado.getTipo()) {
                 case Certificado.WINDOWS:
@@ -368,12 +363,7 @@ public class CertificadoService {
     public static X509Certificate getCertificate(Certificado certificado, KeyStore keystore) throws CertificadoException {
         try {
 
-            //Inclui todas as Cadeias ao Certificado
-            Certificate[] certificates = keystore.getCertificateChain(certificado.getNome());
-            X509Certificate x509Certificates = (X509Certificate) keystore.getCertificate(certificado.getNome());
-            System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
-
-            return x509Certificates;
+            return (X509Certificate) keystore.getCertificate(certificado.getNome());
 
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro Ao pegar X509Certificate: " + e.getMessage());
@@ -389,7 +379,7 @@ public class CertificadoService {
      * @throws IOException
      */
     private static byte[] getBytesFromInputStream(InputStream is) throws IOException {
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream();) {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[0xFFFF];
 
             for (int len; (len = is.read(buffer)) != -1; )
@@ -411,15 +401,14 @@ public class CertificadoService {
      */
     private static InputStream configA3(String marca, String dll)
             throws UnsupportedEncodingException {
-        StringBuilder conf = new StringBuilder();
-        conf.append("name = ")
-                .append(marca)
-                .append("\n\r")
-                .append("library = ")
-                .append(dll)
-                .append("\n\r")
-                .append("showInfo = true");
-        return new ByteArrayInputStream(conf.toString().getBytes("UTF-8"));
+        String conf = "name = " +
+                marca +
+                "\n\r" +
+                "library = " +
+                dll +
+                "\n\r" +
+                "showInfo = true";
+        return new ByteArrayInputStream(conf.getBytes("UTF-8"));
     }
 
 }

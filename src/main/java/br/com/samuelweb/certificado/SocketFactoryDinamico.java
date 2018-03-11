@@ -13,21 +13,26 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 class SocketFactoryDinamico implements ProtocolSocketFactory {
 
-	private SSLContext ssl = null;
+	private SSLContext ssl;
 	private X509Certificate certificate;
 	private PrivateKey privateKey;
 	private InputStream fileCacerts;
+    private KeyStore ks;
+    private String alias;
 
-	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol) throws UnrecoverableKeyException, KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol, KeyStore ks, String alias) throws KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 		this.certificate = certificate;
 		this.privateKey = privateKey;
 		this.fileCacerts = fileCacerts;
 		this.ssl = createSSLContext(sslProtocol);
+		this.alias = alias;
+		this.ks = ks;
 	}
 
     @Override
@@ -48,7 +53,7 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         return this.ssl.getSocketFactory().createSocket(host, port);
     }
 
-    private SSLContext createSSLContext(String sslProtocol) throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
+    private SSLContext createSSLContext(String sslProtocol) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
         final KeyManager[] keyManagers = createKeyManagers();
         final TrustManager[] trustManagers = createTrustManagers();
         final SSLContext sslContext = SSLContext.getInstance(sslProtocol);
@@ -56,7 +61,7 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         return sslContext;
     }
 
-    private KeyManager[] createKeyManagers() throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+    private KeyManager[] createKeyManagers() {
         return new KeyManager[]{new NFKeyManager(certificate, privateKey)};
     }
 
@@ -89,7 +94,14 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         
         @Override
         public X509Certificate[] getCertificateChain(final String arg0) {
-            return new X509Certificate[]{this.certificate};
+            try {
+                Certificate[] certificates = ks.getCertificateChain(alias);
+                X509Certificate[] x509Certificates = new X509Certificate[certificates.length];
+                System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
+                return x509Certificates;
+            } catch (KeyStoreException e) {
+                return new X509Certificate[]{this.certificate};
+            }
         }
         
         @Override
