@@ -2,6 +2,10 @@ package br.com.samuelweb.certificado;
 
 import br.com.samuelweb.certificado.exception.CertificadoException;
 import org.apache.commons.httpclient.protocol.Protocol;
+import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
+import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
+import sun.security.pkcs11.wrapper.PKCS11;
+import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 import java.io.*;
 import java.security.*;
@@ -174,6 +178,34 @@ public class CertificadoService {
     }
 
     /**
+     * Metodo Que retorna um Certificado do Tipo A3 passando a Alias e Serial do Token/SmartCard. Utilizado quando se possui mais de um SmartCard/Token USB conectado.
+     *
+     * @param marca
+     * @param dll
+     * @param senha
+     * @param Alias
+     * @return
+     * @throws CertificadoException
+     */
+    public static Certificado certificadoA3(String marca, String dll, String senha, String alias, String serialToken) throws CertificadoException {
+
+        Certificado certificado = new Certificado();
+        certificado.setMarcaA3(marca);
+        certificado.setSenha(senha);
+        certificado.setDllA3(dll);
+        certificado.setTipo(Certificado.A3);
+        certificado.setSerialToken(serialToken);
+        certificado.setNome(alias);
+        certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        certificado.setDiasRestantes(diasRestantes(certificado));
+        certificado.setValido(valido(certificado));
+
+
+        return certificado;
+
+    }
+
+    /**
      * Retorna a Lista De Certificados Do Repositorio Do Windows
      *
      * @return
@@ -266,10 +298,17 @@ public class CertificadoService {
     private static Date DataValidade(Certificado certificado) throws CertificadoException {
 
         KeyStore keyStore = getKeyStore(certificado);
+        if (keyStore == null) {
+            throw new CertificadoException("Erro Ao pegar Keytore, verifique o Certificado");
+        }
+
         X509Certificate certificate = getCertificate(certificado, keyStore);
+
+
         return certificate.getNotAfter();
 
     }
+
 
     /**
      * Método que retorna os dias Restantes do Certificado Digital
@@ -333,10 +372,16 @@ public class CertificadoService {
                     return keyStore;
                 case Certificado.A3:
                     System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-                    InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3());
+                    String slot = null;
+                    if (certificado.getSerialToken() != null) {
+                        slot = getSlot(certificado.getDllA3(), certificado.getSerialToken());
+                    }
+                    InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3(), slot);
                     Provider p = new sun.security.pkcs11.SunPKCS11(conf);
                     Security.addProvider(p);
+
                     keyStore = KeyStore.getInstance("PKCS11");
+
                     if (keyStore.getProvider() == null) {
                         keyStore = KeyStore.getInstance("PKCS11", p);
                     }
@@ -399,16 +444,64 @@ public class CertificadoService {
      * @return
      * @throws UnsupportedEncodingException
      */
-    private static InputStream configA3(String marca, String dll)
+    private static InputStream configA3(String marca, String dll, String slot)
             throws UnsupportedEncodingException {
+
+        String slotInfo = "";
+
+        if (slot != null) {
+            slotInfo = "\n\r" +
+                    "slot = " + slot;
+        }
+
         String conf = "name = " +
                 marca +
                 "\n\r" +
                 "library = " +
                 dll +
+                slotInfo +
                 "\n\r" +
                 "showInfo = true";
         return new ByteArrayInputStream(conf.getBytes("UTF-8"));
+    }
+
+    private static String getSlot(String libraryPath, String serialNumber) throws IOException, CertificadoException {
+        CK_C_INITIALIZE_ARGS initArgs = new CK_C_INITIALIZE_ARGS();
+        String functionList = "C_GetFunctionList";
+
+        initArgs.flags = 0;
+        PKCS11 tmpPKCS11;
+        long[] slotList;
+        String slotSelected = null;
+        try {
+            try {
+                tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, initArgs, false);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        } catch (PKCS11Exception e) {
+            try {
+                tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, null, true);
+            } catch (Exception ex) {
+                throw new CertificadoException("Erro ao pegar Slot A3: " + e.getMessage());
+            }
+        }
+
+        try {
+            slotList = tmpPKCS11.C_GetSlotList(true);
+
+            for (long slot : slotList) {
+                CK_TOKEN_INFO tokenInfo = tmpPKCS11.C_GetTokenInfo(slot);
+                if (serialNumber.equals(String.valueOf(tokenInfo.serialNumber))) {
+                    slotSelected = String.valueOf(slot);
+                }
+            }
+        } catch (Exception e) {
+            throw new CertificadoException("Erro Ao pegar SlotA3: " + e.getMessage());
+        }
+
+        return slotSelected;
     }
 
 }

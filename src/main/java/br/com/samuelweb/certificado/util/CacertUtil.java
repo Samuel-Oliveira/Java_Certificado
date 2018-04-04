@@ -20,7 +20,7 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-11-03-2018";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-12-03-2018";
 	private static String cacert;
 
 	public static void main(String[] args) {

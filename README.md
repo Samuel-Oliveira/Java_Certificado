@@ -27,6 +27,9 @@ ________________________________________________________________________________
 
 # Historico de Versões
 
+## v1.7 - 04/04/2018
+- Adicionado Slot na Configuração do A3 para 2 A3 na Mesma Maquina. 
+
 ## v1.6 - 11/03/2018
 - Corrigido erro de Unknow CA
 

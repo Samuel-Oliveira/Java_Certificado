@@ -33,6 +33,8 @@ public class Certificado {
 	private String dllA3;
 	
 	private String marcaA3;
+
+    private String serialToken;
 	
 	private boolean valido;
 
@@ -40,7 +42,15 @@ public class Certificado {
 
 	private String sslProtocol = TSLv1_2;
 
-	public boolean isAtivarProperties() {
+    public String getSerialToken() {
+        return serialToken;
+    }
+
+    public void setSerialToken(String serialToken) {
+        this.serialToken = serialToken;
+    }
+
+    public boolean isAtivarProperties() {
 		return ativarProperties;
 	}
 
