@@ -20,22 +20,22 @@ public class CacertUtil {
 
 	private static final int TIMEOUT_WS = 30;
 	private static final int PORTA = 443;
-	private static final String CACERT = "d:/java/util/Cacert/Cacert-12-03-2018";
+	private static final String CACERT = "d:/java/util/Cacert/Cacert-22-04-2018";
 	private static String cacert;
 
 	public static void main(String[] args) {
-		gerarCacert(null, CACERT);
+	    List<String> lista = new ArrayList<>();
+		gerarCacert(lista);
 	}
 
 	/**
 	 * Metodo que gerar o arquivo Cacert com a lista de WebServices Enviada
 	 * Informe null na Lista De Endereços para usar a listagem Padrão
-	 * 
-	 * @param listaEnderecos
-	 * @param caminhoCacert
-	 */
-	public static void gerarCacert(List<String> listaEnderecos, String caminhoCacert) {
-		cacert = caminhoCacert;
+	 *  @param listaEnderecos
+	 *
+     */
+	private static void gerarCacert(List<String> listaEnderecos) {
+		cacert = CacertUtil.CACERT;
 		try {
 
 			// Se não For informado Nenhuma LIsta, carrega a padrão
@@ -61,7 +61,7 @@ public class CacertUtil {
 			ks.load(in, senha);
 			in.close();
 
-			listaEnderecos.stream().forEach(endereco -> {
+			listaEnderecos.forEach(endereco -> {
 				get(endereco, ks);
 			});
 
@@ -75,7 +75,7 @@ public class CacertUtil {
 		}
 	}
 
-	public static void get(String host, KeyStore ks) {
+	private static void get(String host, KeyStore ks) {
 		try {
 			SSLContext context = SSLContext.getInstance("TLS");
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -156,7 +156,7 @@ public class CacertUtil {
 		System.out.println("ERROR: " + log);
 	}
 
-	public static List<String> listaPadraoWebService() {
+	private static List<String> listaPadraoWebService() {
 		List<String> listaWebServices = new ArrayList<>();
 		 //NFE HOMOLOGACAO
 		listaWebServices.add("homnfe.sefaz.am.gov.br");
