@@ -2,6 +2,8 @@ package br.com.samuelweb.certificado;
 
 import br.com.samuelweb.certificado.exception.CertificadoException;
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.bouncycastle.asn1.*;
+import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
@@ -13,10 +15,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Classe Responsavel Por Carregar os Certificados Do Repositorio do Windows
@@ -24,6 +23,8 @@ import java.util.List;
  * @author SaMuK
  */
 public class CertificadoService {
+
+    public static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
 
     /**
      * Metodo Que Inicializa as Informações de Certificado Digital
@@ -217,7 +218,6 @@ public class CertificadoService {
         List<Certificado> listaCert = new ArrayList<>(20);
         Certificado certificado = new Certificado();
         certificado.setTipo(Certificado.WINDOWS);
-        ;
         try {
             KeyStore ks = getKeyStore(certificado);
             Enumeration<String> aliasEnum = ks.aliases();
@@ -504,4 +504,62 @@ public class CertificadoService {
         return slotSelected;
     }
 
+    /**
+     * Retorna o Certificado Baseado no Cnpj Informado!
+     *
+     * @param cnpj
+     * @return
+     * @throws CertificadoException
+     */
+    public static Certificado getCertificadoByCnpj(String cnpj) throws CertificadoException {
+
+        try {
+            for (Certificado cert : listaCertificadosWindows()) {
+
+                try {
+                    KeyStore keyStore = getKeyStore(cert);
+                    X509Certificate certificate = getCertificate(cert, keyStore);
+                    Collection<?> alternativeNames = X509ExtensionUtil.getSubjectAlternativeNames(certificate);
+                    for (Object alternativeName : alternativeNames) {
+                        if (alternativeName instanceof ArrayList) {
+                            ArrayList<?> listOfValues = (ArrayList<?>) alternativeName;
+                            Object value = listOfValues.get(1);
+                            if (value instanceof DERSequence) {
+                                DERSequence derSequence = (DERSequence) value;
+                                DERObjectIdentifier derObjectIdentifier = (DERObjectIdentifier) derSequence.getObjectAt(0);
+                                DERTaggedObject derTaggedObject = (DERTaggedObject) derSequence.getObjectAt(1);
+                                DERObject derObject = derTaggedObject.getObject();
+
+                                String valueOfTag = "";
+                                if (derObject instanceof DEROctetString) {
+                                    DEROctetString octet = (DEROctetString) derObject;
+                                    valueOfTag = new String(octet.getOctets());
+                                } else if (derObject instanceof DERPrintableString) {
+                                    DERPrintableString octet = (DERPrintableString) derObject;
+                                    valueOfTag = new String(octet.getOctets());
+                                } else if (derObject instanceof DERUTF8String) {
+                                    DERUTF8String str = (DERUTF8String) derObject;
+                                    valueOfTag = str.getString();
+                                }
+
+                                if ((valueOfTag != null) && (!"".equals(valueOfTag))) {
+                                    if (derObjectIdentifier.equals(CNPJ) && valueOfTag.equals(cnpj)) {
+                                        return cert;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    throw new RuntimeException("Erro ao pegar Certificado Pelo Cnpj" + e.getMessage());
+                }
+            }
+
+        } catch (Exception e) {
+            throw new CertificadoException("Erro ao pegar Certificado Pelo Cnpj" + e.getMessage());
+        }
+        return null;
+    }
 }
