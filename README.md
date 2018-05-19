@@ -5,7 +5,7 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.8.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.8.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java_certificado-1.8.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-1.8.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
