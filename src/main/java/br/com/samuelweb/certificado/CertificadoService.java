@@ -24,7 +24,8 @@ import java.util.*;
  */
 public class CertificadoService {
 
-    public static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
+    private static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
+    private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
 
     /**
      * Metodo Que Inicializa as Informações de Certificado Digital
@@ -512,6 +513,21 @@ public class CertificadoService {
      * @throws CertificadoException
      */
     public static Certificado getCertificadoByCnpj(String cnpj) throws CertificadoException {
+        return getCertificadoByDados(cnpj, CNPJ);
+    }
+
+    /**
+     * Retorna o Certificado Baseado no CPF Informado!
+     *
+     * @param cnpj
+     * @return
+     * @throws CertificadoException
+     */
+    public static Certificado getCertificadoByCpf(String cnpj) throws CertificadoException {
+        return getCertificadoByDados(cnpj, CPF);
+    }
+
+    private static Certificado getCertificadoByDados(String dados, DERObjectIdentifier tipo) throws CertificadoException {
 
         try {
             for (Certificado cert : listaCertificadosWindows()) {
@@ -543,8 +559,16 @@ public class CertificadoService {
                                 }
 
                                 if ((valueOfTag != null) && (!"".equals(valueOfTag))) {
-                                    if (derObjectIdentifier.equals(CNPJ) && valueOfTag.equals(cnpj)) {
-                                        return cert;
+                                    if (derObjectIdentifier.equals(tipo)) {
+                                        if (tipo.equals(CPF)) {
+                                            if (valueOfTag.length() > 25 && valueOfTag.substring(8, 19).equals(dados)) {
+                                                return cert;
+                                            }
+                                        } else {
+                                            if (valueOfTag.equals(dados)) {
+                                                return cert;
+                                            }
+                                        }
                                     }
 
                                 }

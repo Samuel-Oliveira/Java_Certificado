@@ -5,7 +5,7 @@ JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.8.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.8.jar) e o adicione às bibliotecas de Seu Projeto.
+- Baixe o java-certificado-1.9.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.9.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Maven :
 ```
@@ -17,7 +17,7 @@ Para Iniciar :
 		<dependency>
 			<groupId>br.com.samuelweb</groupId>
 			<artifactId>java_certificado</artifactId>
-			<version>1.8</version>
+			<version>1.9</version>
 		</dependency>
 ```
 
@@ -26,6 +26,9 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 
 # Historico de Versões
+
+## v1.9 - 20/06/2018
+- Adicionado opção de pegar o Certificado (Windows) pelo Cpf
 
 ## v1.8 - 09/05/2018
 - Adicionado opção de pegar o Certificado (Windows) pelo Cnpj
