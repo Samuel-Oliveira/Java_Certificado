@@ -2,6 +2,9 @@
 Projeto Java de Gerenciamentos de Certificado Digital
 JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
 
+## Dúvidas, Sugestões ou Consultoria
+Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
+
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
@@ -60,6 +63,3 @@ ________________________________________________________________________________
 
 ## v1.0 - 29/05/2017
 - Versão Inicial Do Sistema
-
-Outras Duvidas Entrar em Contato samuk.exe@hotmail.com
-
