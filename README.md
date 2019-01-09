@@ -1,4 +1,4 @@
-# Java_Certificado[![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg) ](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.0/jar)
+# Java_Certificado [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg) ](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.0/jar)
 Projeto Java de Gerenciamentos de Certificado Digital
 
 ## Dúvidas, Sugestões ou Consultoria
