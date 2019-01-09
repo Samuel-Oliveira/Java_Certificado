@@ -17,23 +17,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-/**
- * Classe Responsavel Por Carregar os Certificados Do Repositorio do Windows
- *
- * @author SaMuK
- */
 public class CertificadoService {
 
     private static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
     private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
 
-    /**
-     * Metodo Que Inicializa as Informações de Certificado Digital
-     *
-     * @param certificado
-     * @param cacert
-     * @throws CertificadoException
-     */
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
 
         try {
@@ -55,14 +43,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Que retorna um Certificado do Tipo PFX Bytes
-     *
-     * @param certificadoBytes
-     * @param senha
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
 
         Certificado certificado = new Certificado();
@@ -88,14 +68,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Que retorna um Certificado do Tipo PFX
-     *
-     * @param caminhoCertificado
-     * @param senha
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado certificadoPfx(String caminhoCertificado, String senha) throws CertificadoException {
 
         Certificado certificado = new Certificado();
@@ -120,15 +92,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Que retorna um Certificado do Tipo A3
-     *
-     * @param marca
-     * @param dll
-     * @param senha
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado certificadoA3(String marca, String dll, String senha) throws CertificadoException {
 
         Certificado certificado = new Certificado();
@@ -152,16 +115,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Que retorna um Certificado do Tipo A3 passando a Alias, para mais de 1 certificado A3.
-     *
-     * @param marca
-     * @param dll
-     * @param senha
-     * @param Alias
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado certificadoA3(String marca, String dll, String senha, String alias) throws CertificadoException {
 
         Certificado certificado = new Certificado();
@@ -179,16 +132,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Que retorna um Certificado do Tipo A3 passando a Alias e Serial do Token/SmartCard. Utilizado quando se possui mais de um SmartCard/Token USB conectado.
-     *
-     * @param marca
-     * @param dll
-     * @param senha
-     * @param Alias
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado certificadoA3(String marca, String dll, String senha, String alias, String serialToken) throws CertificadoException {
 
         Certificado certificado = new Certificado();
@@ -207,12 +150,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Retorna a Lista De Certificados Do Repositorio Do Windows
-     *
-     * @return
-     * @throws CertificadoException
-     */
     public static List<Certificado> listaCertificadosWindows() throws CertificadoException {
 
         // Estou setando a variavel para 20 dispositivos no maximo
@@ -256,12 +193,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Retorna a Lista De Certificados A3
-     *
-     * @return
-     * @throws CertificadoException
-     */
     public static List<String> listaAliasCertificadosA3(String marca, String dll, String senha) throws CertificadoException {
 
         try {
@@ -289,13 +220,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Método  que retorna a Data De Validade Do Certificado Digital
-     *
-     * @param certificado
-     * @return
-     * @throws CertificadoException
-     */
     private static Date DataValidade(Certificado certificado) throws CertificadoException {
 
         KeyStore keyStore = getKeyStore(certificado);
@@ -311,13 +235,6 @@ public class CertificadoService {
     }
 
 
-    /**
-     * Método que retorna os dias Restantes do Certificado Digital
-     *
-     * @param certificado
-     * @return
-     * @throws CertificadoException
-     */
     private static Long diasRestantes(Certificado certificado) throws CertificadoException {
 
         Date data = DataValidade(certificado);
@@ -328,26 +245,12 @@ public class CertificadoService {
         return differenceMilliSeconds / 1000 / 60 / 60 / 24;
     }
 
-    /**
-     * Método Que retorno se o Certificado é válido
-     *
-     * @param certificado
-     * @return
-     * @throws CertificadoException
-     */
     private static boolean valido(Certificado certificado) throws CertificadoException {
 
         return DataValidade(certificado) != null && DataValidade(certificado).after(new Date());
 
     }
 
-    /**
-     * Retorna a KeyStore do Certificado
-     *
-     * @param certificado
-     * @return
-     * @throws CertificadoException
-     */
     public static KeyStore getKeyStore(Certificado certificado) throws CertificadoException {
         try {
             KeyStore keyStore;
@@ -398,14 +301,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Retorna o X509Certificate do Certificado
-     *
-     * @param certificado
-     * @param keystore
-     * @return
-     * @throws CertificadoException
-     */
     public static X509Certificate getCertificate(Certificado certificado, KeyStore keystore) throws CertificadoException {
         try {
 
@@ -417,13 +312,6 @@ public class CertificadoService {
 
     }
 
-    /**
-     * Metodo Para Retornar o Byte[] do InputStream
-     *
-     * @param is
-     * @return
-     * @throws IOException
-     */
     private static byte[] getBytesFromInputStream(InputStream is) throws IOException {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[0xFFFF];
@@ -437,14 +325,6 @@ public class CertificadoService {
         }
     }
 
-    /**
-     * Metodo que Retorna o InputStream das Configurações do Certificado A3
-     *
-     * @param marca
-     * @param dll
-     * @return
-     * @throws UnsupportedEncodingException
-     */
     private static InputStream configA3(String marca, String dll, String slot)
             throws UnsupportedEncodingException {
 
@@ -505,24 +385,10 @@ public class CertificadoService {
         return slotSelected;
     }
 
-    /**
-     * Retorna o Certificado Baseado no Cnpj Informado!
-     *
-     * @param cnpj
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado getCertificadoByCnpj(String cnpj) throws CertificadoException {
         return getCertificadoByDados(cnpj, CNPJ);
     }
 
-    /**
-     * Retorna o Certificado Baseado no CPF Informado!
-     *
-     * @param cnpj
-     * @return
-     * @throws CertificadoException
-     */
     public static Certificado getCertificadoByCpf(String cnpj) throws CertificadoException {
         return getCertificadoByDados(cnpj, CPF);
     }
