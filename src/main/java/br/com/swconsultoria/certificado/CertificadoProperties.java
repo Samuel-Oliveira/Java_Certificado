@@ -1,13 +1,13 @@
-package br.com.samuelweb.certificado;
+package br.com.swconsultoria.certificado;
 
 /**
  * Created by Samuel on 03/07/2017.
  */
 
-import br.com.samuelweb.certificado.exception.CertificadoException;
+import br.com.swconsultoria.certificado.exception.CertificadoException;
 
 import java.io.*;
-import java.security.*;
+import java.security.Security;
 
 /**
  * Classe para uso exclusivo em caso do Erro Unknow CA

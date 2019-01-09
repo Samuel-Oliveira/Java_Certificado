@@ -1,31 +1,33 @@
-# Java_Certificado[![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado)
+# Java_Certificado[![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg) ](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE)
 Projeto Java de Gerenciamentos de Certificado Digital
 JavaDoc -> https://samuel-oliveira.github.io/Java_Certificado/
+
+## Dúvidas, Sugestões ou Consultoria
+Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
 
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Baixe o java-certificado-1.9.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-1.9.jar) e o adicione às bibliotecas de Seu Projeto.
+- Caso use Libs baixe o java-certificado-2.0.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-2.0.jar) e o adicione às bibliotecas de Seu Projeto.
 
-- Maven :
+- Caso use Maven :
 ```
-	    <repository>
-			<name>Repositorio Autocom</name>
-			<id>Snapshot</id>
-			<url>http://www.autocomsistemas.com.br:8081/nexus/content/repositories/autocom/</url>
-		</repository>
-		<dependency>
-			<groupId>br.com.samuelweb</groupId>
-			<artifactId>java_certificado</artifactId>
-			<version>1.9</version>
-		</dependency>
+    <dependency>
+        <groupId>br.com.swconsultoria</groupId>
+        <artifactId>java_certificado</artifactId>
+        <version>2.0</version>
+    </dependency>
 ```
 
 Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter um Tutorial Completo.
 
 ________________________________________________________________________________________________
-
 # Historico de Versões
+
+## v2.0 - 08/01/2018
+- Adicionado Ao Maven Central
+- Alterado nome de Packages
+- Limpeza no Projeto
 
 ## v1.9 - 20/06/2018
 - Adicionado opção de pegar o Certificado (Windows) pelo Cpf
@@ -60,6 +62,3 @@ ________________________________________________________________________________
 
 ## v1.0 - 29/05/2017
 - Versão Inicial Do Sistema
-
-Outras Duvidas Entrar em Contato samuk.exe@hotmail.com
-
