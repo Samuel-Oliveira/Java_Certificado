@@ -12,11 +12,11 @@ Para Iniciar :
 
 - Caso use Maven :
 ```
-    <dependency>
-        <groupId>br.com.swconsultoria</groupId>
-        <artifactId>java_certificado</artifactId>
-        <version>2.0</version>
-    </dependency>
+<dependency>
+    <groupId>br.com.swconsultoria</groupId>
+    <artifactId>java_certificado</artifactId>
+    <version>2.0</version>
+</dependency>
 ```
 
 Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter um Tutorial Completo.
