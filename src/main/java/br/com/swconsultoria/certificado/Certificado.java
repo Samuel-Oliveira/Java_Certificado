@@ -11,11 +11,12 @@ import java.time.LocalDate;
 public class Certificado {
 	
 	public static final String WINDOWS = "windows";
+	public static final String MAC = "mac";
 	public static final String ARQUIVO = "arquivo";
 	public static final String ARQUIVO_BYTES = "arquivo_bytes";
 	public static final String TSLv1_2 = "TLSv1.2";
 	public static final String A3 = "a3";
-	
+
 	private String nome;
 	
 	private LocalDate vencimento;
@@ -27,7 +28,9 @@ public class Certificado {
 	private byte[] arquivoBytes;
 
 	private String senha;
-	
+
+	private String cnpjCpf;
+
 	private String tipo;
 	
 	private String dllA3;
@@ -41,6 +44,14 @@ public class Certificado {
 	private boolean ativarProperties = false;
 
 	private String sslProtocol = TSLv1_2;
+
+    public String getCnpjCpf() {
+        return cnpjCpf;
+    }
+
+    public void setCnpjCpf(String cnpjCpf) {
+        this.cnpjCpf = cnpjCpf;
+    }
 
     public String getSerialToken() {
         return serialToken;

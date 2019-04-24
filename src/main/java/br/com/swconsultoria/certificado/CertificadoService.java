@@ -3,7 +3,6 @@ package br.com.swconsultoria.certificado;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.bouncycastle.asn1.*;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 import sun.security.pkcs11.wrapper.PKCS11;
@@ -56,8 +55,8 @@ public class CertificadoService {
             String aliasKey = aliasEnum.nextElement();
 
             certificado.setNome(aliasKey);
-            certificado
-                    .setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
+            certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             certificado.setDiasRestantes(diasRestantes(certificado));
             certificado.setValido(valido(certificado));
         } catch (KeyStoreException e) {
@@ -81,6 +80,7 @@ public class CertificadoService {
             String aliasKey = aliasEnum.nextElement();
 
             certificado.setNome(aliasKey);
+            certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
             certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             certificado.setDiasRestantes(diasRestantes(certificado));
             certificado.setValido(valido(certificado));
@@ -93,67 +93,47 @@ public class CertificadoService {
     }
 
     public static Certificado certificadoA3(String marca, String dll, String senha) throws CertificadoException {
-
-        Certificado certificado = new Certificado();
-        try {
-            certificado.setMarcaA3(marca);
-            certificado.setSenha(senha);
-            certificado.setDllA3(dll);
-            certificado.setTipo(Certificado.A3);
-
-            Enumeration<String> aliasEnum = getKeyStore(certificado).aliases();
-
-            certificado.setNome(aliasEnum.nextElement());
-            certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            certificado.setDiasRestantes(diasRestantes(certificado));
-            certificado.setValido(valido(certificado));
-        } catch (KeyStoreException e) {
-            throw new CertificadoException("Erro ao carregar informações do certificado:" + e.getMessage());
-        }
-
-        return certificado;
-
+        return certificadoA3(marca, dll, senha, null, null);
     }
 
     public static Certificado certificadoA3(String marca, String dll, String senha, String alias) throws CertificadoException {
 
-        Certificado certificado = new Certificado();
-        certificado.setMarcaA3(marca);
-        certificado.setSenha(senha);
-        certificado.setDllA3(dll);
-        certificado.setTipo(Certificado.A3);
-
-        certificado.setNome(alias);
-        certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        certificado.setDiasRestantes(diasRestantes(certificado));
-        certificado.setValido(valido(certificado));
-
-        return certificado;
+        return certificadoA3(marca, dll, senha, alias, null);
 
     }
 
     public static Certificado certificadoA3(String marca, String dll, String senha, String alias, String serialToken) throws CertificadoException {
 
-        Certificado certificado = new Certificado();
-        certificado.setMarcaA3(marca);
-        certificado.setSenha(senha);
-        certificado.setDllA3(dll);
-        certificado.setTipo(Certificado.A3);
-        certificado.setSerialToken(serialToken);
-        certificado.setNome(alias);
-        certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        certificado.setDiasRestantes(diasRestantes(certificado));
-        certificado.setValido(valido(certificado));
+        try {
+            Certificado certificado = new Certificado();
+            certificado.setMarcaA3(marca);
+            certificado.setSenha(senha);
+            certificado.setDllA3(dll);
+            certificado.setTipo(Certificado.A3);
+            certificado.setSerialToken(serialToken);
 
+            KeyStore keyStore = getKeyStore(certificado);
+            if (alias == null) {
+                certificado.setNome(keyStore.aliases().nextElement());
+            } else {
+                certificado.setNome(alias);
+            }
 
-        return certificado;
+            certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
+            certificado.setVencimento(DataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            certificado.setDiasRestantes(diasRestantes(certificado));
+            certificado.setValido(valido(certificado));
+
+            return certificado;
+        } catch (Exception e) {
+            throw new CertificadoException("Erro ao carregar informações do certificado:" + e.getMessage());
+        }
 
     }
 
     public static List<Certificado> listaCertificadosWindows() throws CertificadoException {
 
-        // Estou setando a variavel para 20 dispositivos no maximo
-        List<Certificado> listaCert = new ArrayList<>(20);
+        List<Certificado> listaCert = new ArrayList<>();
         Certificado certificado = new Certificado();
         certificado.setTipo(Certificado.WINDOWS);
         try {
@@ -166,7 +146,51 @@ public class CertificadoService {
                 if (aliasKey != null) {
                     Certificado cert = new Certificado();
                     cert.setNome(aliasKey);
+                    cert.setCnpjCpf(getDocumentoFromCertificado(cert, ks));
                     cert.setTipo(Certificado.WINDOWS);
+                    cert.setSenha("");
+                    Date dataValidade = DataValidade(cert);
+                    if (dataValidade == null) {
+                        cert.setNome("(INVALIDO)" + aliasKey);
+                        cert.setVencimento(LocalDate.of(2000, 1, 1));
+                        cert.setDiasRestantes(0L);
+                        cert.setValido(false);
+                    } else {
+                        cert.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+                        cert.setDiasRestantes(diasRestantes(cert));
+                        cert.setValido(valido(cert));
+                    }
+
+                    listaCert.add(cert);
+                }
+
+            }
+
+        } catch (KeyStoreException ex) {
+            throw new CertificadoException("Erro ao Carregar Certificados:" + ex.getMessage());
+        }
+
+        return listaCert;
+
+    }
+
+    public static List<Certificado> listaCertificadosMac() throws CertificadoException {
+
+        List<Certificado> listaCert = new ArrayList<>();
+        Certificado certificado = new Certificado();
+        certificado.setTipo(Certificado.MAC);
+        try {
+            KeyStore ks = getKeyStore(certificado);
+            Enumeration<String> aliasEnum = ks.aliases();
+
+            while (aliasEnum.hasMoreElements()) {
+                String aliasKey = aliasEnum.nextElement();
+
+                if (aliasKey != null) {
+                    Certificado cert = new Certificado();
+                    cert.setNome(aliasKey);
+                    cert.setCnpjCpf(getDocumentoFromCertificado(cert, ks));
+                    cert.setTipo(Certificado.MAC);
                     cert.setSenha("");
                     Date dataValidade = DataValidade(cert);
                     if (dataValidade == null) {
@@ -234,7 +258,6 @@ public class CertificadoService {
 
     }
 
-
     private static Long diasRestantes(Certificado certificado) throws CertificadoException {
 
         Date data = DataValidade(certificado);
@@ -258,6 +281,10 @@ public class CertificadoService {
             switch (certificado.getTipo()) {
                 case Certificado.WINDOWS:
                     keyStore = KeyStore.getInstance("Windows-MY", "SunMSCAPI");
+                    keyStore.load(null, null);
+                    return keyStore;
+                case Certificado.MAC:
+                    keyStore = KeyStore.getInstance("KeychainStore");
                     keyStore.load(null, null);
                     return keyStore;
                 case Certificado.ARQUIVO:
@@ -385,71 +412,75 @@ public class CertificadoService {
         return slotSelected;
     }
 
+    @Deprecated
     public static Certificado getCertificadoByCnpj(String cnpj) throws CertificadoException {
-        return getCertificadoByDados(cnpj, CNPJ);
+        return getCertificadoByCnpjCpf(cnpj);
     }
 
+    @Deprecated
     public static Certificado getCertificadoByCpf(String cnpj) throws CertificadoException {
-        return getCertificadoByDados(cnpj, CPF);
+        return getCertificadoByCnpjCpf(cnpj);
     }
 
-    private static Certificado getCertificadoByDados(String dados, DERObjectIdentifier tipo) throws CertificadoException {
+    public static Certificado getCertificadoByCnpjCpf(String cnpjCpf) throws CertificadoException {
+        return listaCertificadosWindows().stream().filter(cert -> cnpjCpf.equals(cert.getCnpjCpf())).findFirst().orElseThrow(() -> new CertificadoException("Certificado não encontrado com CNPJ/CPF : " + cnpjCpf));
+    }
 
+    private static String getDocumentoFromCertificado(Certificado certificado, KeyStore keyStore) throws CertificadoException {
+
+        final String[] cnpjCpf = {""};
         try {
-            for (Certificado cert : listaCertificadosWindows()) {
+            X509Certificate certificate = getCertificate(certificado, keyStore);
 
+            verifica(certificate.getSubjectAlternativeNames()).orElse(new ArrayList<>())
+                    .stream().filter(x -> x.get(0).equals(0)).forEach(a -> {
                 try {
-                    KeyStore keyStore = getKeyStore(cert);
-                    X509Certificate certificate = getCertificate(cert, keyStore);
-                    Collection<?> alternativeNames = X509ExtensionUtil.getSubjectAlternativeNames(certificate);
-                    for (Object alternativeName : alternativeNames) {
-                        if (alternativeName instanceof ArrayList) {
-                            ArrayList<?> listOfValues = (ArrayList<?>) alternativeName;
-                            Object value = listOfValues.get(1);
-                            if (value instanceof DERSequence) {
-                                DERSequence derSequence = (DERSequence) value;
-                                DERObjectIdentifier derObjectIdentifier = (DERObjectIdentifier) derSequence.getObjectAt(0);
-                                DERTaggedObject derTaggedObject = (DERTaggedObject) derSequence.getObjectAt(1);
-                                DERObject derObject = derTaggedObject.getObject();
-
-                                String valueOfTag = "";
-                                if (derObject instanceof DEROctetString) {
-                                    DEROctetString octet = (DEROctetString) derObject;
-                                    valueOfTag = new String(octet.getOctets());
-                                } else if (derObject instanceof DERPrintableString) {
-                                    DERPrintableString octet = (DERPrintableString) derObject;
-                                    valueOfTag = new String(octet.getOctets());
-                                } else if (derObject instanceof DERUTF8String) {
-                                    DERUTF8String str = (DERUTF8String) derObject;
-                                    valueOfTag = str.getString();
-                                }
-
-                                if ((valueOfTag != null) && (!"".equals(valueOfTag))) {
-                                    if (derObjectIdentifier.equals(tipo)) {
-                                        if (tipo.equals(CPF)) {
-                                            if (valueOfTag.length() > 25 && valueOfTag.substring(8, 19).equals(dados)) {
-                                                return cert;
-                                            }
-                                        } else {
-                                            if (valueOfTag.equals(dados)) {
-                                                return cert;
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
+                    byte[] data = (byte[]) a.get(1);
+                    ASN1InputStream is = new ASN1InputStream(data);
+                    DERSequence derSequence = (DERSequence) is.readObject();
+                    DERObjectIdentifier tipo = DERObjectIdentifier.getInstance(derSequence.getObjectAt(0));
+                    if (CNPJ.equals(tipo) || CPF.equals(tipo)) {
+                        Object objeto = ((DERTaggedObject) ((DERTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
+                        if (objeto instanceof DEROctetString) {
+                            cnpjCpf[0] = new String(((DEROctetString) objeto).getOctets());
+                        } else if (objeto instanceof DERPrintableString) {
+                            cnpjCpf[0] = ((DERPrintableString) objeto).getString();
+                        } else if (objeto instanceof DERUTF8String) {
+                            cnpjCpf[0] = ((DERUTF8String) objeto).getString();
+                        } else if (objeto instanceof DERIA5String) {
+                            cnpjCpf[0] = ((DERIA5String) objeto).getString();
                         }
                     }
-
+                    if(CPF.equals(tipo) && cnpjCpf[0].length() > 25){
+                        cnpjCpf[0] = cnpjCpf[0].substring(8, 19);
+                    }
                 } catch (Exception e) {
-                    throw new RuntimeException("Erro ao pegar Certificado Pelo Cnpj" + e.getMessage());
+                    e.printStackTrace();
                 }
-            }
+            });
 
         } catch (Exception e) {
-            throw new CertificadoException("Erro ao pegar Certificado Pelo Cnpj" + e.getMessage());
+            e.printStackTrace();
+            throw new CertificadoException("Erro ao pegar Docuemnto do Certificado: " + e.getMessage());
         }
-        return null;
+        return cnpjCpf[0];
+    }
+
+    /**
+     * Verifica se um objeto é vazio.
+     *
+     * @param obj
+     * @param <T>
+     * @return
+     */
+    public static <T> Optional<T> verifica(T obj) {
+        if (obj == null)
+            return Optional.empty();
+        if (obj instanceof Collection)
+            return ((Collection<?>) obj).size() == 0 ? Optional.empty() : Optional.of(obj);
+
+        final String s = String.valueOf(obj).trim();
+
+        return s.length() == 0 || s.equalsIgnoreCase("null") ? Optional.empty() : Optional.of(obj);
     }
 }
