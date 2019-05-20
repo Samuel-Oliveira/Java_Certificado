@@ -5,11 +5,10 @@ package br.com.swconsultoria.certificado.exception;
  *
  * @author Samuel Oliveira - samuk.exe@hotmail.com - www.swconsultoria.com.br
  */
+@SuppressWarnings("WeakerAccess")
 public class CertificadoException extends Exception {
 
-	private static final long serialVersionUID = -5054900660251852366L;
-	
-	String message;
+	private String message;
 	
 	/**
 	 * Construtor da classe.

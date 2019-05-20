@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package br.com.swconsultoria.certificado;
 
@@ -13,27 +13,22 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 class SocketFactoryDinamico implements ProtocolSocketFactory {
 
-	private SSLContext ssl;
-	private X509Certificate certificate;
-	private PrivateKey privateKey;
-	private InputStream fileCacerts;
-    private KeyStore ks;
-    private String alias;
+    private SSLContext ssl;
+    private final X509Certificate certificate;
+    private final PrivateKey privateKey;
+    private final InputStream fileCacerts;
 
-	public SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol, KeyStore ks, String alias) throws KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-		this.certificate = certificate;
-		this.privateKey = privateKey;
-		this.fileCacerts = fileCacerts;
-		this.ssl = createSSLContext(sslProtocol);
-		this.alias = alias;
-		this.ks = ks;
-	}
+    SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol) throws KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        this.certificate = certificate;
+        this.privateKey = privateKey;
+        this.fileCacerts = fileCacerts;
+        this.ssl = createSSLContext(sslProtocol);
+    }
 
     @Override
     public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException {
@@ -72,48 +67,41 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
     }
-    
+
     private class NFKeyManager implements X509KeyManager {
         private final X509Certificate certificate;
         private final PrivateKey privateKey;
-        
+
         NFKeyManager(final X509Certificate certificate, final PrivateKey privateKey) {
             this.certificate = certificate;
             this.privateKey = privateKey;
         }
-        
+
         @Override
         public String chooseClientAlias(final String[] arg0, final Principal[] arg1, final Socket arg2) {
             return this.certificate.getIssuerDN().getName();
         }
-        
+
         @Override
         public String chooseServerAlias(final String arg0, final Principal[] arg1, final Socket arg2) {
             return null;
         }
-        
+
         @Override
         public X509Certificate[] getCertificateChain(final String arg0) {
-            try {
-                Certificate[] certificates = ks.getCertificateChain(alias);
-                X509Certificate[] x509Certificates = new X509Certificate[certificates.length];
-                System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
-                return x509Certificates;
-            } catch (KeyStoreException e) {
-                return new X509Certificate[]{this.certificate};
-            }
+            return new X509Certificate[]{this.certificate};
         }
-        
+
         @Override
         public String[] getClientAliases(final String arg0, final Principal[] arg1) {
             return new String[]{this.certificate.getIssuerDN().getName()};
         }
-        
+
         @Override
         public PrivateKey getPrivateKey(final String arg0) {
             return this.privateKey;
         }
-        
+
         @Override
         public String[] getServerAliases(final String arg0, final Principal[] arg1) {
             return null;

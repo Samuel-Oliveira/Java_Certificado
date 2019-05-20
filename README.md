@@ -1,4 +1,6 @@
-# Java_Certificado [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg) ](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.1/jar)
+# Java_Certificado [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg) ](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.1/jar) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/alerts/)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     [![Total alerts](https://img.shields.io/lgtm/alerts/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/alerts/)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/context:java)
 Projeto Java de Gerenciamentos de Certificado Digital
 
 ## Dúvidas, Sugestões ou Consultoria
@@ -22,6 +24,12 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 
 ________________________________________________________________________________________________
 # Historico de Versões
+
+## v2.2 - 
+- Refatoração de Código
+- Certificado.tipo Depreciado
+- Criado Certificado.tipoCertificado
+- Inicio de Testes Unitários
 
 ## v2.1 - 24/04/2019
 - Adicionado Propriedade CPF/CNPJ ao certificado

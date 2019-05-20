@@ -12,9 +12,9 @@ import java.security.Security;
 /**
  * Classe para uso exclusivo em caso do Erro Unknow CA
  */
-public class CertificadoProperties {
+class CertificadoProperties {
 
-    public static void inicia(Certificado certificado , InputStream iSCacert ) throws CertificadoException {
+    static void inicia(Certificado certificado, InputStream iSCacert) throws CertificadoException {
 
         System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
         System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
@@ -26,28 +26,39 @@ public class CertificadoProperties {
 
         System.setProperty("jdk.tls.client.protocols", "TLSv1.2"); // Servidor do	Sefaz RS
 
-        if(certificado.getTipo().equals(Certificado.WINDOWS)){
-            System.setProperty("javax.net.ssl.keyStoreProvider", "SunMSCAPI");
-            System.setProperty("javax.net.ssl.keyStoreType", "Windows-MY");
-            System.setProperty("javax.net.ssl.keyStoreAlias", certificado.getNome());
-        }else if(certificado.getTipo().equals(Certificado.ARQUIVO) || certificado.getTipo().equals(Certificado.ARQUIVO_BYTES)){
-            System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
-            System.setProperty("javax.net.ssl.keyStore", certificado.getArquivo());
+        switch (certificado.getTipoCertificado()) {
+            case REPOSITORIO_WINDOWS:
+                System.setProperty("javax.net.ssl.keyStoreProvider", "SunMSCAPI");
+                System.setProperty("javax.net.ssl.keyStoreType", "Windows-MY");
+                System.setProperty("javax.net.ssl.keyStoreAlias", certificado.getNome());
+                break;
+            case REPOSITORIO_MAC:
+                System.setProperty("javax.net.ssl.keyStoreType", "KeychainStore");
+                System.setProperty("javax.net.ssl.keyStoreAlias", certificado.getNome());
+                break;
+            case ARQUIVO:
+            case ARQUIVO_BYTES:
+                System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
+                System.setProperty("javax.net.ssl.keyStore", certificado.getArquivo());
+                break;
+            case TOKEN_A3:
+              throw new CertificadoException("Token A3 não pode utilizar Configuração através de Properties.");
         }
 
-        System.setProperty("javax.net.ssl.keyStorePassword",certificado.getSenha());
+        System.setProperty("javax.net.ssl.keyStorePassword", certificado.getSenha());
 
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 
         //Extrair Cacert do Jar
-        String cacert = "";
+        String cacert;
         try {
             File file = File.createTempFile("tempfile", ".tmp");
             OutputStream out = new FileOutputStream(file);
             int read;
             byte[] bytes = new byte[1024];
 
-            while ((read = iSCacert.read(bytes)) != -1) {
+            while ((read = iSCacert.read(bytes)) !=
+                    -1) {
                 out.write(bytes, 0, read);
             }
             out.close();

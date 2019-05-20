@@ -8,41 +8,37 @@ import java.time.LocalDate;
  * 
  */
 
+@SuppressWarnings("WeakerAccess")
 public class Certificado {
-	
+
+    @Deprecated
 	public static final String WINDOWS = "windows";
+    @Deprecated
 	public static final String MAC = "mac";
+    @Deprecated
 	public static final String ARQUIVO = "arquivo";
+    @Deprecated
 	public static final String ARQUIVO_BYTES = "arquivo_bytes";
-	public static final String TSLv1_2 = "TLSv1.2";
+    @Deprecated
 	public static final String A3 = "a3";
 
+    private static final String TSLv1_2 = "TLSv1.2";
+
 	private String nome;
-	
 	private LocalDate vencimento;
-	
 	private Long diasRestantes;
-
 	private String arquivo;
-	
 	private byte[] arquivoBytes;
-
 	private String senha;
-
 	private String cnpjCpf;
-
+	@Deprecated
 	private String tipo;
-	
+	private TipoCertificadoEnum tipoCertificado;
 	private String dllA3;
-	
 	private String marcaA3;
-
     private String serialToken;
-	
 	private boolean valido;
-
 	private boolean ativarProperties = false;
-
 	private String sslProtocol = TSLv1_2;
 
     public String getCnpjCpf() {
@@ -165,15 +161,17 @@ public class Certificado {
 	/**
 	 * @return the tipo
 	 */
+	@Deprecated
 	public String getTipo() {
-		return tipo;
+		return tipoCertificado.getDescricao();
 	}
 
 	/**
 	 * @param tipo the tipo to set
 	 */
+    @Deprecated
 	public void setTipo(String tipo) {
-		this.tipo = tipo;
+		this.tipoCertificado = TipoCertificadoEnum.valueOfDescricao(tipo);
 	}
 
 	/**
@@ -218,4 +216,11 @@ public class Certificado {
 		this.marcaA3 = marcaA3;
 	}
 
+    public TipoCertificadoEnum getTipoCertificado() {
+        return tipoCertificado;
+    }
+
+    public void setTipoCertificado(TipoCertificadoEnum tipoCertificado) {
+        this.tipoCertificado = tipoCertificado;
+    }
 }
