@@ -9,6 +9,7 @@ import sun.security.pkcs11.wrapper.PKCS11;
 import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -274,7 +275,7 @@ public class CertificadoService {
                         throw new CertificadoException("Certificado Digital não Encontrado");
                     }
                     keyStore = KeyStore.getInstance("PKCS12");
-                    try (ByteArrayInputStream bs = new ByteArrayInputStream(getBytesFromInputStream(new FileInputStream(file)))) {
+                    try (ByteArrayInputStream bs = new ByteArrayInputStream(Files.readAllBytes(file.toPath()))) {
                         keyStore.load(bs, certificado.getSenha().toCharArray());
                     }
                     return keyStore;
@@ -323,20 +324,6 @@ public class CertificadoService {
                                                    e.getMessage());
         }
 
-    }
-
-    private static byte[] getBytesFromInputStream(InputStream is) throws IOException {
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[0xFFFF];
-
-            for (int len; (len = is.read(buffer)) !=
-                    -1; )
-                os.write(buffer, 0, len);
-
-            os.flush();
-
-            return os.toByteArray();
-        }
     }
 
     private static InputStream configA3(String marca, String dll, String slot)
