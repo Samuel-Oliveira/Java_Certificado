@@ -10,6 +10,7 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -25,6 +26,9 @@ public class CertificadoService {
     private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
 
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
+
+        Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo."));
+        Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo."));
 
         try {
 
@@ -46,6 +50,9 @@ public class CertificadoService {
     }
 
     public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
+
+        Optional.ofNullable(certificadoBytes).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo."));
+        Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula."));
 
         Certificado certificado = new Certificado();
         try {
@@ -74,9 +81,18 @@ public class CertificadoService {
         certificado.setValido(valido(certificado));
     }
 
-    public static Certificado certificadoPfx(String caminhoCertificado, String senha) throws CertificadoException {
+    public static Certificado certificadoPfx(String caminhoCertificado, String senha) throws CertificadoException, FileNotFoundException {
+
+        Optional.ofNullable(caminhoCertificado).orElseThrow(() -> new IllegalArgumentException("Caminho do Certificado não pode ser nulo."));
+        Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula."));
+
+        if (!Files.exists(Paths.get(caminhoCertificado)))
+            throw new FileNotFoundException("Arquivo " +
+                                                    caminhoCertificado +
+                                                    " não existe");
 
         Certificado certificado = new Certificado();
+
         try {
             certificado.setArquivo(caminhoCertificado);
             certificado.setSenha(senha);
@@ -308,6 +324,9 @@ public class CertificadoService {
                                                            certificado.getTipoCertificado());
             }
         } catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException | NoSuchProviderException e) {
+            if (Optional.ofNullable(e.getMessage()).orElse("").startsWith("keystore password was incorrect"))
+                throw new CertificadoException("Senha do Certificado inválida.");
+
             throw new CertificadoException("Erro Ao pegar KeyStore: " +
                                                    e.getMessage());
         }
