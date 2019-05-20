@@ -144,6 +144,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <repoToken>ZXJODVZzDCke6fFBOL5YI2TzP9exeAO0A</repoToken>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <format>xml</format>
+                    <quiet>true</quiet>
+                    <maxmem>64m</maxmem>
+                    <aggregate>true</aggregate>
+                    <check>
+                        <branchRate>80</branchRate>
+                        <lineRate>80</lineRate>
+                    </check>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
