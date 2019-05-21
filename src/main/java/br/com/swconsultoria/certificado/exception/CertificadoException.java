@@ -37,12 +37,4 @@ public class CertificadoException extends Exception {
 		return message;
 	}
 
-	/**
-	 * @param message the message to set
-	 */
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	
 }
