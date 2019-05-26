@@ -70,6 +70,7 @@ public class CertificadoService {
     }
 
     private static void setDadosCertificado(Certificado certificado) throws CertificadoException, KeyStoreException {
+
         KeyStore keyStore = getKeyStore(certificado);
         Enumeration<String> aliasEnum = keyStore.aliases();
         String aliasKey = aliasEnum.nextElement();

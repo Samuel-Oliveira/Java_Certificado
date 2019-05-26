@@ -1,18 +1,18 @@
 package br.com.swconsultoria.certificado;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Samuel Oliveira - samuk.exe@hotmail.com
  * Data: 19/05/2019 - 16:04
  */
-public class TipoCertificadoEnumTest {
+class TipoCertificadoEnumTest {
 
     @Test
-    public void deveRepresentarADescricaoCorretamente() {
+    void deveRepresentarADescricaoCorretamente() {
 
         assertEquals("windows", TipoCertificadoEnum.REPOSITORIO_WINDOWS.getDescricao());
         assertEquals("mac", TipoCertificadoEnum.REPOSITORIO_MAC.getDescricao());
@@ -21,13 +21,15 @@ public class TipoCertificadoEnumTest {
         assertEquals("a3", TipoCertificadoEnum.TOKEN_A3.getDescricao());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void deveLancarExcecaoCasoTenteBuscarDescricaoErrada() {
-        TipoCertificadoEnum.valueOfDescricao("window");
+    @Test
+    void deveLancarExcecaoCasoTenteBuscarDescricaoErrada() {
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                TipoCertificadoEnum.valueOfDescricao("window")
+        );
     }
 
     @Test
-    public void deveObterAtravesDaDescricao() {
+    void deveObterAtravesDaDescricao() {
         assertEquals(TipoCertificadoEnum.REPOSITORIO_WINDOWS, TipoCertificadoEnum.valueOfDescricao("windows"));
         assertEquals(TipoCertificadoEnum.REPOSITORIO_MAC, TipoCertificadoEnum.valueOfDescricao("mac"));
         assertEquals(TipoCertificadoEnum.ARQUIVO, TipoCertificadoEnum.valueOfDescricao("arquivo"));

@@ -1,4 +1,4 @@
-# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.1/jar) [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/alerts/) [![Coverage Status](https://coveralls.io/repos/github/Samuel-Oliveira/Java_Certificado/badge.svg?branch=master)](https://coveralls.io/github/Samuel-Oliveira/Java_Certificado?branch=master)
+# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.2/jar) [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/alerts/)
 
 Projeto Java de Gerenciamentos de Certificado Digital
 
@@ -8,14 +8,14 @@ Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
 ## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
 
 Para Iniciar : 
-- Caso use Libs baixe o java-certificado-2.1.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-2.1.jar) e o adicione às bibliotecas de Seu Projeto.
+- Caso use Libs baixe o java-certificado-2.2.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-2.2.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Caso use Maven :
 ```
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>2.1</version>
+    <version>2.2</version>
 </dependency>
 ```
 
@@ -24,11 +24,11 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 # Historico de Versões
 
-## v2.2 - 
+## v2.2 - 26/05/2019
 - Refatoração de Código
 - Certificado.tipo Depreciado
 - Criado Certificado.tipoCertificado
-- Inicio de Testes Unitários
+- Incluido Testes Unitários
 
 ## v2.1 - 24/04/2019
 - Adicionado Propriedade CPF/CNPJ ao certificado

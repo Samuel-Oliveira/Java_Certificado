@@ -31,15 +31,20 @@ public class Certificado {
 	private byte[] arquivoBytes;
 	private String senha;
 	private String cnpjCpf;
-	@Deprecated
-	private String tipo;
 	private TipoCertificadoEnum tipoCertificado;
-	private String dllA3;
-	private String marcaA3;
+    private String dllA3;
+    private String marcaA3;
     private String serialToken;
-	private boolean valido;
-	private boolean ativarProperties = false;
-	private String sslProtocol = TSLv1_2;
+    private boolean valido;
+    private boolean ativarProperties;
+    private String sslProtocol;
+    @Deprecated
+    private String tipo;
+
+    public Certificado() {
+        this.setAtivarProperties(false);
+        this.setSslProtocol(TSLv1_2);
+    }
 
     public String getCnpjCpf() {
         return cnpjCpf;
