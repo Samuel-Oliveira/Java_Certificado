@@ -6,26 +6,35 @@ package br.com.swconsultoria.certificado;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 class SocketFactoryDinamico implements ProtocolSocketFactory {
 
-    private SSLContext ssl;
-    private final X509Certificate certificate;
-    private final PrivateKey privateKey;
+    private final KeyStore keyStore;
+    private final String alias;
+    private final String senha;
     private final InputStream fileCacerts;
+    private SSLContext ssl;
 
-    SocketFactoryDinamico(X509Certificate certificate, PrivateKey privateKey, InputStream fileCacerts, String sslProtocol) throws KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        this.certificate = certificate;
-        this.privateKey = privateKey;
+    SocketFactoryDinamico(KeyStore keyStore, String alias, String senha, InputStream fileCacerts, String sslProtocol) throws KeyManagementException,
+            CertificateException,
+            NoSuchAlgorithmException, KeyStoreException, IOException {
+        this.keyStore = keyStore;
+        this.alias = alias;
+        this.senha = senha;
         this.fileCacerts = fileCacerts;
         this.ssl = createSSLContext(sslProtocol);
     }
@@ -57,7 +66,7 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
     }
 
     private KeyManager[] createKeyManagers() {
-        return new KeyManager[]{new NFKeyManager(certificate, privateKey)};
+        return new KeyManager[]{new AliasKeyManager(keyStore, alias, senha)};
     }
 
     private TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
@@ -66,45 +75,5 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         trustStore.load(fileCacerts, "changeit".toCharArray());
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
-    }
-
-    private class NFKeyManager implements X509KeyManager {
-        private final X509Certificate certificate;
-        private final PrivateKey privateKey;
-
-        NFKeyManager(final X509Certificate certificate, final PrivateKey privateKey) {
-            this.certificate = certificate;
-            this.privateKey = privateKey;
-        }
-
-        @Override
-        public String chooseClientAlias(final String[] arg0, final Principal[] arg1, final Socket arg2) {
-            return this.certificate.getIssuerDN().getName();
-        }
-
-        @Override
-        public String chooseServerAlias(final String arg0, final Principal[] arg1, final Socket arg2) {
-            return null;
-        }
-
-        @Override
-        public X509Certificate[] getCertificateChain(final String arg0) {
-            return new X509Certificate[]{this.certificate};
-        }
-
-        @Override
-        public String[] getClientAliases(final String arg0, final Principal[] arg1) {
-            return new String[]{this.certificate.getIssuerDN().getName()};
-        }
-
-        @Override
-        public PrivateKey getPrivateKey(final String arg0) {
-            return this.privateKey;
-        }
-
-        @Override
-        public String[] getServerAliases(final String arg0, final Principal[] arg1) {
-            return null;
-        }
     }
 }

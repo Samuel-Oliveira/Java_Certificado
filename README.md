@@ -24,6 +24,9 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v2.3 -
+- Corrigido erro Unknow Certificate
+
 ## v2.2 - 26/05/2019
 - Refatoração de Código
 - Certificado.tipo Depreciado

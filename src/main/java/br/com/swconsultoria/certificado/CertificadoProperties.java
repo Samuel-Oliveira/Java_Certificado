@@ -7,6 +7,7 @@ package br.com.swconsultoria.certificado;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.security.Security;
 
 /**
@@ -14,7 +15,7 @@ import java.security.Security;
  */
 class CertificadoProperties {
 
-    static void inicia(Certificado certificado, InputStream iSCacert) throws CertificadoException {
+    static void inicia(Certificado certificado, InputStream iSCacert) throws CertificadoException, IOException {
 
         System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
         System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
@@ -37,9 +38,14 @@ class CertificadoProperties {
                 System.setProperty("javax.net.ssl.keyStoreAlias", certificado.getNome());
                 break;
             case ARQUIVO:
-            case ARQUIVO_BYTES:
                 System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
                 System.setProperty("javax.net.ssl.keyStore", certificado.getArquivo());
+                break;
+            case ARQUIVO_BYTES:
+                File cert = File.createTempFile("cert", ".pfx");
+                Files.write(cert.toPath(),certificado.getArquivoBytes());
+                System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
+                System.setProperty("javax.net.ssl.keyStore", cert.getAbsolutePath());
                 break;
             case TOKEN_A3:
               throw new CertificadoException("Token A3 não pode utilizar Configuração através de Properties.");
@@ -70,5 +76,11 @@ class CertificadoProperties {
 
         System.setProperty("javax.net.ssl.trustStore", cacert);
 
+    }
+
+    public static void main(String[] args) throws IOException {
+        File cert = File.createTempFile("cert", ".pfx");
+        Files.write(cert.toPath(),Files.readAllBytes(new File("d:/certificado.pfx").toPath()));
+        System.out.println(cert.getAbsolutePath());
     }
 }

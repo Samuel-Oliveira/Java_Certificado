@@ -33,17 +33,16 @@ public class CertificadoService {
         try {
 
             KeyStore keyStore = getKeyStore(certificado);
-            X509Certificate certificate = getCertificate(certificado, keyStore);
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(certificado.getNome(), certificado.getSenha().toCharArray());
             if (certificado.isAtivarProperties()) {
                 CertificadoProperties.inicia(certificado, cacert);
             } else {
-                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(certificate, privateKey, cacert, certificado.getSslProtocol());
+                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore,certificado.getNome(),certificado.getSenha(), cacert,
+                        certificado.getSslProtocol());
                 Protocol protocol = new Protocol("https", socketFactory, 443);
                 Protocol.registerProtocol("https", protocol);
             }
 
-        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
             throw new CertificadoException(e.getMessage());
         }
 
