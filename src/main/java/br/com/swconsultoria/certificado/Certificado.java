@@ -1,6 +1,7 @@
 package br.com.swconsultoria.certificado;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -26,6 +27,7 @@ public class Certificado {
 
 	private String nome;
 	private LocalDate vencimento;
+	private LocalDateTime dataHoraVencimento;
 	private Long diasRestantes;
 	private String arquivo;
 	private byte[] arquivoBytes;
@@ -104,6 +106,20 @@ public class Certificado {
 	 */
 	public void setVencimento(LocalDate vencimento) {
 		this.vencimento = vencimento;
+	}
+
+	/**
+	 * @return the dataHoraVencimento
+	 */
+	public LocalDateTime getDataHoraVencimento() {
+		return dataHoraVencimento;
+	}
+
+	/**
+	 * @param dataHoraVencimento the vencimento to set
+	 */
+	public void setDataHoraVencimento(LocalDateTime dataHoraVencimento) {
+		this.dataHoraVencimento = dataHoraVencimento;
 	}
 
 	/**
