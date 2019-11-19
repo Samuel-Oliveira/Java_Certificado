@@ -414,16 +414,6 @@ public class CertificadoService {
         return slotSelected;
     }
 
-    @Deprecated
-    public static Certificado getCertificadoByCnpj(String cnpj) throws CertificadoException {
-        return getCertificadoByCnpjCpf(cnpj);
-    }
-
-    @Deprecated
-    public static Certificado getCertificadoByCpf(String cnpj) throws CertificadoException {
-        return getCertificadoByCnpjCpf(cnpj);
-    }
-
     public static Certificado getCertificadoByCnpjCpf(String cnpjCpf) throws CertificadoException {
         return listaCertificadosWindows().stream().filter(cert -> cnpjCpf.equals(cert.getCnpjCpf())).findFirst().orElseThrow(() -> new CertificadoException("Certificado não encontrado com CNPJ/CPF : " +
                                                                                                                                                                     cnpjCpf));

@@ -12,17 +12,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("WeakerAccess")
 public class Certificado {
 
-    @Deprecated
-	public static final String WINDOWS = "windows";
-    @Deprecated
-	public static final String MAC = "mac";
-    @Deprecated
-	public static final String ARQUIVO = "arquivo";
-    @Deprecated
-	public static final String ARQUIVO_BYTES = "arquivo_bytes";
-    @Deprecated
-	public static final String A3 = "a3";
-
     private static final String TSLv1_2 = "TLSv1.2";
 
 	private String nome;
@@ -40,8 +29,6 @@ public class Certificado {
     private boolean valido;
     private boolean ativarProperties;
     private String sslProtocol;
-    @Deprecated
-    private String tipo;
 
     public Certificado() {
         this.setAtivarProperties(false);
@@ -177,22 +164,6 @@ public class Certificado {
 	 */
 	public void setArquivoBytes(byte[] arquivo_bytes) {
 		this.arquivoBytes = arquivo_bytes;
-	}
-
-	/**
-	 * @return the tipo
-	 */
-	@Deprecated
-	public String getTipo() {
-		return tipoCertificado.getDescricao();
-	}
-
-	/**
-	 * @param tipo the tipo to set
-	 */
-    @Deprecated
-	public void setTipo(String tipo) {
-		this.tipoCertificado = TipoCertificadoEnum.valueOfDescricao(tipo);
 	}
 
 	/**

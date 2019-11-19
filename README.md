@@ -24,6 +24,10 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v2.4 - SNAPSHOT
+- Adicionado propriedade de DataHora de vencimento
+- Removido Objetos Depreciados
+
 ## v2.3 - 20/07/2019
 - Corrigido erro Unknow Certificate
 
