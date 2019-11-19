@@ -15,6 +15,7 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -77,6 +78,7 @@ public class CertificadoService {
         certificado.setNome(aliasKey);
         certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
         certificado.setVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        certificado.setDataHoraVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         certificado.setDiasRestantes(diasRestantes(certificado));
         certificado.setValido(valido(certificado));
     }
@@ -131,6 +133,7 @@ public class CertificadoService {
 
             certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
             certificado.setVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            certificado.setDataHoraVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
             certificado.setDiasRestantes(diasRestantes(certificado));
             certificado.setValido(valido(certificado));
 
@@ -182,10 +185,12 @@ public class CertificadoService {
             cert.setNome("(INVALIDO)" +
                                  aliasKey);
             cert.setVencimento(LocalDate.of(2000, 1, 1));
+            cert.setDataHoraVencimento(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
             cert.setDiasRestantes(0L);
             cert.setValido(false);
         } else {
             cert.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            cert.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
             cert.setDiasRestantes(diasRestantes(cert));
             cert.setValido(valido(cert));
         }
