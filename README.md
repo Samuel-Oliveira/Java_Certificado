@@ -5,7 +5,7 @@ Projeto Java de Gerenciamentos de Certificado Digital
 ## Dúvidas, Sugestões ou Consultoria
 Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
 
-## Gostou do Projeto? Dê sua colaboração pelo Pix: 01713390108 <img src="https://swconsultoria.com.br/pix.png" width="150">
+## Gostou do Projeto? Dê sua colaboração pelo Pix: 01713390108 <img src="https://swconsultoria.com.br/pix.png" width="200">
 
 Para Iniciar : 
 - Caso use Libs baixe o java-certificado-2.4.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-2.4.jar) e o adicione às bibliotecas de Seu Projeto.
