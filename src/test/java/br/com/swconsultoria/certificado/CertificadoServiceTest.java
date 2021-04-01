@@ -156,8 +156,7 @@ class CertificadoServiceTest {
     @Test
     void inicaConfiguracoesCorretamente() throws IOException, CertificadoException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
-        InputStream cacert = new FileInputStream(new File("Cacert"));
-        CertificadoService.inicializaCertificado(certificado, cacert);
+        CertificadoService.inicializaCertificado(certificado);
     }
 
     @Test
@@ -168,11 +167,11 @@ class CertificadoServiceTest {
 
         //Certificado Null
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-            CertificadoService.inicializaCertificado(null, cacert)
+            CertificadoService.inicializaCertificado(null)
         );
         //Cacert Null
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-            CertificadoService.inicializaCertificado(null, cacert)
+            CertificadoService.inicializaCertificado(null)
         );
     }
 

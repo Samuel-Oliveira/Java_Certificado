@@ -19,12 +19,21 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("WeakerAccess")
 public class CertificadoService {
 
     private static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
     private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
+    private static boolean cacertProprio;
+    private static String ultimoLog = "";
+
+    public static void inicializaCertificado(Certificado certificado) throws CertificadoException {
+        cacertProprio = true;
+        inicializaCertificado(certificado, CertificadoService.class.getResourceAsStream("/cacert"));
+    }
 
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
 
@@ -37,10 +46,30 @@ public class CertificadoService {
             if (certificado.isAtivarProperties()) {
                 CertificadoProperties.inicia(certificado, cacert);
             } else {
-                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore,certificado.getNome(),certificado.getSenha(), cacert,
+                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(), cacert,
                         certificado.getSslProtocol());
                 Protocol protocol = new Protocol("https", socketFactory, 443);
                 Protocol.registerProtocol("https", protocol);
+            }
+
+            if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
+                System.err.println("####################################################################");
+                System.err.println("              Java-Certificado - Versão 2.4 - 01/04/2021            ");
+                if (Logger.getLogger("").isLoggable(Level.WARNING)) {
+                    System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
+                }
+                System.err.println(" Tipo: " + certificado.getTipoCertificado().toString() +
+                                " - Vencimento: " + certificado.getDataHoraVencimento());
+                if(certificado.getTipoCertificado().equals(TipoCertificadoEnum.ARQUIVO)){
+                    System.err.println(" Caminho: " + certificado.getArquivo());
+                }
+                System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf()+
+                        " - Alias: " + certificado.getNome().toUpperCase());
+                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 01/04/2021" : "Customizado"));
+                System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties()  ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
+                        " - Protocolo SSL: " +  certificado.getSslProtocol());
+                System.err.println("####################################################################");
+                ultimoLog = certificado.getCnpjCpf();
             }
 
         } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
@@ -62,7 +91,7 @@ public class CertificadoService {
             setDadosCertificado(certificado);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
         return certificado;
@@ -90,8 +119,8 @@ public class CertificadoService {
 
         if (!Files.exists(Paths.get(caminhoCertificado)))
             throw new FileNotFoundException("Arquivo " +
-                                                    caminhoCertificado +
-                                                    " não existe");
+                    caminhoCertificado +
+                    " não existe");
 
         Certificado certificado = new Certificado();
 
@@ -102,7 +131,7 @@ public class CertificadoService {
             setDadosCertificado(certificado);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
         return certificado;
@@ -140,7 +169,7 @@ public class CertificadoService {
             return certificado;
         } catch (Exception e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
     }
@@ -166,7 +195,7 @@ public class CertificadoService {
 
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados:" +
-                                                   ex.getMessage());
+                    ex.getMessage());
         }
 
         return listaCert;
@@ -183,7 +212,7 @@ public class CertificadoService {
         if (dataValidade ==
                 null) {
             cert.setNome("(INVALIDO)" +
-                                 aliasKey);
+                    aliasKey);
             cert.setVencimento(LocalDate.of(2000, 1, 1));
             cert.setDataHoraVencimento(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
             cert.setDiasRestantes(0L);
@@ -219,7 +248,7 @@ public class CertificadoService {
 
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados:" +
-                                                   ex.getMessage());
+                    ex.getMessage());
         }
 
         return listaCert;
@@ -249,7 +278,7 @@ public class CertificadoService {
             return listaCert;
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados A3:" +
-                                                   ex.getMessage());
+                    ex.getMessage());
         }
 
     }
@@ -263,7 +292,6 @@ public class CertificadoService {
         }
 
         X509Certificate certificate = getCertificate(certificado, keyStore);
-
 
         return certificate.getNotAfter();
 
@@ -326,14 +354,14 @@ public class CertificadoService {
                     return keyStore;
                 default:
                     throw new CertificadoException("Tipo de certificado não Configurado: " +
-                                                           certificado.getTipoCertificado());
+                            certificado.getTipoCertificado());
             }
         } catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException | NoSuchProviderException e) {
             if (Optional.ofNullable(e.getMessage()).orElse("").startsWith("keystore password was incorrect"))
                 throw new CertificadoException("Senha do Certificado inválida.");
 
             throw new CertificadoException("Erro Ao pegar KeyStore: " +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
     }
@@ -345,7 +373,7 @@ public class CertificadoService {
 
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro Ao pegar X509Certificate: " +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
     }
@@ -393,7 +421,7 @@ public class CertificadoService {
                 tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, null, true);
             } catch (Exception ex) {
                 throw new CertificadoException("Erro ao pegar Slot A3: " +
-                                                       e.getMessage());
+                        e.getMessage());
             }
         }
 
@@ -408,7 +436,7 @@ public class CertificadoService {
             }
         } catch (Exception e) {
             throw new CertificadoException("Erro Ao pegar SlotA3: " +
-                                                   e.getMessage());
+                    e.getMessage());
         }
 
         return slotSelected;
@@ -416,7 +444,7 @@ public class CertificadoService {
 
     public static Certificado getCertificadoByCnpjCpf(String cnpjCpf) throws CertificadoException {
         return listaCertificadosWindows().stream().filter(cert -> cnpjCpf.equals(cert.getCnpjCpf())).findFirst().orElseThrow(() -> new CertificadoException("Certificado não encontrado com CNPJ/CPF : " +
-                                                                                                                                                                    cnpjCpf));
+                cnpjCpf));
     }
 
     private static String getDocumentoFromCertificado(Certificado certificado, KeyStore keyStore) throws CertificadoException {
@@ -427,38 +455,38 @@ public class CertificadoService {
 
             Optional.ofNullable(certificate.getSubjectAlternativeNames())
                     .ifPresent(lista ->
-                                       lista.stream().filter(x -> x.get(0).equals(0)).forEach(a -> {
-                                           byte[] data = (byte[]) a.get(1);
-                                           try (ASN1InputStream is = new ASN1InputStream(data)) {
+                            lista.stream().filter(x -> x.get(0).equals(0)).forEach(a -> {
+                                byte[] data = (byte[]) a.get(1);
+                                try (ASN1InputStream is = new ASN1InputStream(data)) {
 
-                                               DERSequence derSequence = (DERSequence) is.readObject();
-                                               DERObjectIdentifier tipo = DERObjectIdentifier.getInstance(derSequence.getObjectAt(0));
-                                               if (CNPJ.equals(tipo) ||
-                                                       CPF.equals(tipo)) {
-                                                   Object objeto = ((DERTaggedObject) ((DERTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
-                                                   if (objeto instanceof DEROctetString) {
-                                                       cnpjCpf[0] = new String(((DEROctetString) objeto).getOctets());
-                                                   } else if (objeto instanceof DERPrintableString) {
-                                                       cnpjCpf[0] = ((DERPrintableString) objeto).getString();
-                                                   } else if (objeto instanceof DERUTF8String) {
-                                                       cnpjCpf[0] = ((DERUTF8String) objeto).getString();
-                                                   } else if (objeto instanceof DERIA5String) {
-                                                       cnpjCpf[0] = ((DERIA5String) objeto).getString();
-                                                   }
-                                               }
-                                               if (CPF.equals(tipo) &&
-                                                       cnpjCpf[0].length() >
-                                                               25) {
-                                                   cnpjCpf[0] = cnpjCpf[0].substring(8, 19);
-                                               }
-                                           } catch (Exception e) {
-                                               e.printStackTrace();
-                                           }
-                                       }));
+                                    DERSequence derSequence = (DERSequence) is.readObject();
+                                    DERObjectIdentifier tipo = DERObjectIdentifier.getInstance(derSequence.getObjectAt(0));
+                                    if (CNPJ.equals(tipo) ||
+                                            CPF.equals(tipo)) {
+                                        Object objeto = ((DERTaggedObject) ((DERTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
+                                        if (objeto instanceof DEROctetString) {
+                                            cnpjCpf[0] = new String(((DEROctetString) objeto).getOctets());
+                                        } else if (objeto instanceof DERPrintableString) {
+                                            cnpjCpf[0] = ((DERPrintableString) objeto).getString();
+                                        } else if (objeto instanceof DERUTF8String) {
+                                            cnpjCpf[0] = ((DERUTF8String) objeto).getString();
+                                        } else if (objeto instanceof DERIA5String) {
+                                            cnpjCpf[0] = ((DERIA5String) objeto).getString();
+                                        }
+                                    }
+                                    if (CPF.equals(tipo) &&
+                                            cnpjCpf[0].length() >
+                                                    25) {
+                                        cnpjCpf[0] = cnpjCpf[0].substring(8, 19);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }));
 
         } catch (Exception e) {
             throw new CertificadoException("Erro ao pegar Documento do Certificado: " +
-                                                   e.getMessage());
+                    e.getMessage());
         }
         return cnpjCpf[0];
     }
