@@ -10,7 +10,8 @@ public enum TipoCertificadoA3 {
 	LEITOR_SCR3310("SafeWeb","c:/windows/system32/cmp11.dll"),
 	TOKEN_ALADDIN("eToken","c:/windows/system32/eTpkcs11.dll"),
 	LEITOR_GEMPC_PERTO("SmartCard","c:/windows/system32/aetpkss1.dll"),
-	OBERTHUR("Oberthur", "c:/windows/system32/OcsCryptoki.dll");
+	OBERTHUR("Oberthur", "c:/windows/system32/OcsCryptoki.dll"),
+	ENTER_SAFE("EnterSafe", "c:/windows/system32/eps2003csp11.dll");
 
 	private final String marca;
 	private final String dll;
