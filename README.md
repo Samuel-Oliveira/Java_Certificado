@@ -5,7 +5,7 @@ Projeto Java de Gerenciamentos de Certificado Digital
 ## Dúvidas, Sugestões ou Consultoria
 Entre no Discord do Projeto: https://discord.gg/ZXpqnaV
 
-## Gostou do Projeto? Dê sua colaboração: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TX9K693QQYA6W)
+## Gostou do Projeto? Dê sua colaboração pelo Pix: 01713390108 <img src="https://swconsultoria.com.br/pix.png" width="150">
 
 Para Iniciar : 
 - Caso use Libs baixe o java-certificado-2.4.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java-certificado-2.4.jar) e o adicione às bibliotecas de Seu Projeto.
@@ -24,7 +24,7 @@ Veja a Wiki https://github.com/Samuel-Oliveira/Java_Certificado/wiki, para ter u
 ________________________________________________________________________________________________
 # Historico de Versões
 
-## v2.4
+## v2.4 - 01/04/2021
 - Adicionado Cacert e Cacert Util a este projeto, agora este projeto que irá gerenciar os Cacerts.
 - Adicionado propriedade de DataHora de vencimento
 - Removido Objetos Depreciados
