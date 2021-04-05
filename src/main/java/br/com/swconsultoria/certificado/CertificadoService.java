@@ -15,7 +15,6 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -54,20 +53,20 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.4 - 01/04/2021            ");
+                System.err.println("              Java-Certificado - Versão 2.5 - 04/04/2021            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
                 System.err.println(" Tipo: " + certificado.getTipoCertificado().toString() +
-                                " - Vencimento: " + certificado.getDataHoraVencimento());
-                if(certificado.getTipoCertificado().equals(TipoCertificadoEnum.ARQUIVO)){
+                        " - Vencimento: " + certificado.getDataHoraVencimento());
+                if (certificado.getTipoCertificado().equals(TipoCertificadoEnum.ARQUIVO)) {
                     System.err.println(" Caminho: " + certificado.getArquivo());
                 }
-                System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf()+
+                System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
                 System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 01/04/2021" : "Customizado"));
-                System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties()  ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
-                        " - Protocolo SSL: " +  certificado.getSslProtocol());
+                System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties() ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
+                        " - Protocolo SSL: " + certificado.getSslProtocol());
                 System.err.println("####################################################################");
                 ultimoLog = certificado.getCnpjCpf();
             }
@@ -88,7 +87,7 @@ public class CertificadoService {
             certificado.setArquivoBytes(certificadoBytes);
             certificado.setSenha(senha);
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO_BYTES);
-            setDadosCertificado(certificado);
+            setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
                     e.getMessage());
@@ -98,16 +97,20 @@ public class CertificadoService {
 
     }
 
-    private static void setDadosCertificado(Certificado certificado) throws CertificadoException, KeyStoreException {
+    private static void setDadosCertificado(Certificado certificado, KeyStore keyStore) throws CertificadoException, KeyStoreException {
 
-        KeyStore keyStore = getKeyStore(certificado);
-        Enumeration<String> aliasEnum = keyStore.aliases();
-        String aliasKey = aliasEnum.nextElement();
+        if (keyStore == null) {
+            keyStore = getKeyStore(certificado);
+            Enumeration<String> aliasEnum = keyStore.aliases();
+            String aliasKey = aliasEnum.nextElement();
+            certificado.setNome(aliasKey);
+        }
 
-        certificado.setNome(aliasKey);
-        certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
-        certificado.setVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        certificado.setDataHoraVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        X509Certificate certificate = getCertificate(certificado, keyStore);
+        certificado.setCnpjCpf(getDocumentoFromCertificado(certificate));
+        Date dataValidade = dataValidade(certificate);
+        certificado.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        certificado.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         certificado.setDiasRestantes(diasRestantes(certificado));
         certificado.setValido(valido(certificado));
     }
@@ -128,7 +131,7 @@ public class CertificadoService {
             certificado.setArquivo(caminhoCertificado);
             certificado.setSenha(senha);
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO);
-            setDadosCertificado(certificado);
+            setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
                     e.getMessage());
@@ -156,16 +159,7 @@ public class CertificadoService {
             certificado.setDllA3(dll);
             certificado.setTipoCertificado(TipoCertificadoEnum.TOKEN_A3);
             certificado.setSerialToken(serialToken);
-
-            KeyStore keyStore = getKeyStore(certificado);
-            certificado.setNome(Optional.ofNullable(alias).orElse(keyStore.aliases().nextElement()));
-
-            certificado.setCnpjCpf(getDocumentoFromCertificado(certificado, keyStore));
-            certificado.setVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            certificado.setDataHoraVencimento(dataValidade(certificado).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-            certificado.setDiasRestantes(diasRestantes(certificado));
-            certificado.setValido(valido(certificado));
-
+            setDadosCertificado(certificado, null);
             return certificado;
         } catch (Exception e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
@@ -175,84 +169,36 @@ public class CertificadoService {
     }
 
     public static List<Certificado> listaCertificadosWindows() throws CertificadoException {
-
-        List<Certificado> listaCert = new ArrayList<>();
-        Certificado certificado = new Certificado();
-        certificado.setTipoCertificado(TipoCertificadoEnum.REPOSITORIO_WINDOWS);
-        try {
-            KeyStore ks = getKeyStore(certificado);
-            Enumeration<String> aliasEnum = ks.aliases();
-
-            while (aliasEnum.hasMoreElements()) {
-                String aliasKey = aliasEnum.nextElement();
-
-                if (aliasKey !=
-                        null) {
-                    setDadosCertificado(listaCert, ks, aliasKey, TipoCertificadoEnum.REPOSITORIO_WINDOWS);
-                }
-
-            }
-
-        } catch (KeyStoreException ex) {
-            throw new CertificadoException("Erro ao Carregar Certificados:" +
-                    ex.getMessage());
-        }
-
-        return listaCert;
-
-    }
-
-    private static void setDadosCertificado(List<Certificado> listaCert, KeyStore ks, String aliasKey, TipoCertificadoEnum tipoCertificadoEnum) throws CertificadoException {
-        Certificado cert = new Certificado();
-        cert.setNome(aliasKey);
-        cert.setCnpjCpf(getDocumentoFromCertificado(cert, ks));
-        cert.setTipoCertificado(tipoCertificadoEnum);
-        cert.setSenha("");
-        Date dataValidade = dataValidade(cert);
-        if (dataValidade ==
-                null) {
-            cert.setNome("(INVALIDO)" +
-                    aliasKey);
-            cert.setVencimento(LocalDate.of(2000, 1, 1));
-            cert.setDataHoraVencimento(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
-            cert.setDiasRestantes(0L);
-            cert.setValido(false);
-        } else {
-            cert.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            cert.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-            cert.setDiasRestantes(diasRestantes(cert));
-            cert.setValido(valido(cert));
-        }
-
-        listaCert.add(cert);
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_WINDOWS);
     }
 
     public static List<Certificado> listaCertificadosMac() throws CertificadoException {
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_MAC);
+    }
+
+    private static List<Certificado> listaCertificadosRepositorio(TipoCertificadoEnum tipo) throws CertificadoException {
 
         List<Certificado> listaCert = new ArrayList<>();
-        Certificado certificado = new Certificado();
-        certificado.setTipoCertificado(TipoCertificadoEnum.REPOSITORIO_MAC);
+        Certificado cert = new Certificado();
+        cert.setTipoCertificado(tipo);
         try {
-            KeyStore ks = getKeyStore(certificado);
+            KeyStore ks = getKeyStore(cert);
             Enumeration<String> aliasEnum = ks.aliases();
-
             while (aliasEnum.hasMoreElements()) {
                 String aliasKey = aliasEnum.nextElement();
-
-                if (aliasKey !=
-                        null) {
-                    setDadosCertificado(listaCert, ks, aliasKey, TipoCertificadoEnum.REPOSITORIO_MAC);
+                if (aliasKey != null) {
+                    Certificado certificado = new Certificado();
+                    certificado.setTipoCertificado(tipo);
+                    certificado.setNome(aliasKey);
+                    setDadosCertificado(certificado, ks);
+                    listaCert.add(certificado);
                 }
-
             }
-
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados:" +
                     ex.getMessage());
         }
-
         return listaCert;
-
     }
 
     public static List<String> listaAliasCertificadosA3(String marca, String dll, String senha) throws CertificadoException {
@@ -283,18 +229,9 @@ public class CertificadoService {
 
     }
 
-    private static Date dataValidade(Certificado certificado) throws CertificadoException {
-
-        KeyStore keyStore = getKeyStore(certificado);
-        if (keyStore ==
-                null) {
-            throw new CertificadoException("Erro Ao pegar Keytore, verifique o Certificado");
-        }
-
-        X509Certificate certificate = getCertificate(certificado, keyStore);
-
-        return certificate.getNotAfter();
-
+    private static Date dataValidade(X509Certificate certificate) {
+        return Optional.ofNullable(certificate.getNotAfter())
+                .orElse(Date.from(LocalDate.of(2020, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     private static Long diasRestantes(Certificado certificado) {
@@ -447,12 +384,10 @@ public class CertificadoService {
                 cnpjCpf));
     }
 
-    private static String getDocumentoFromCertificado(Certificado certificado, KeyStore keyStore) throws CertificadoException {
+    private static String getDocumentoFromCertificado(X509Certificate certificate) throws CertificadoException {
 
         final String[] cnpjCpf = {""};
         try {
-            X509Certificate certificate = getCertificate(certificado, keyStore);
-
             Optional.ofNullable(certificate.getSubjectAlternativeNames())
                     .ifPresent(lista ->
                             lista.stream().filter(x -> x.get(0).equals(0)).forEach(a -> {
