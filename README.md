@@ -28,6 +28,7 @@ ________________________________________________________________________________
 ## v2.6 - 28/06/2021
 - Gerado novo Cacert
 - Alterado Versão bc-prov para evitar conflitos com outras Bibliotecas
+- Adicionado possibilidade de buscar Certificado pela raiz do CNPJ
 
 ## v2.5 - 04/04/2021
 - Gerado novo Cacert

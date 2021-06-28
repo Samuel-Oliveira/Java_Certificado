@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,16 +140,20 @@ class CertificadoServiceTest {
         new MockUp<CertificadoService>() {
             @Mock
             public Certificado getCertificadoByCnpjCpf(String cpfCnpj) {
-                return  Stream.of(certCPF, certCNPJ).filter(c -> c.getCnpjCpf().equals(cpfCnpj)).findFirst().orElse(null);
+                return  Stream.of(certCPF, certCNPJ).filter(cert -> Optional.ofNullable(cert.getCnpjCpf()).orElse("")
+                        .startsWith(cpfCnpj)).findFirst().orElse(null);
             }
         };
 
         Certificado certificadoCPF = CertificadoService.getCertificadoByCnpjCpf(CPF);
         Certificado certificadoCNPJ = CertificadoService.getCertificadoByCnpjCpf(CNPJ);
+        String CNPJ_RAIZ = "99999999";
+        Certificado certificadoCNPJRaiz = CertificadoService.getCertificadoByCnpjCpf(CNPJ_RAIZ);
         Certificado certificadoInvalido = CertificadoService.getCertificadoByCnpjCpf("12312123456");
 
         assertEquals(certificadoCPF.getCnpjCpf(), CPF);
         assertEquals(certificadoCNPJ.getCnpjCpf(), CNPJ);
+        assertEquals(certificadoCNPJRaiz.getCnpjCpf(), CPF);
         assertNull(certificadoInvalido);
 
     }

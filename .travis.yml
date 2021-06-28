@@ -1,10 +1,6 @@
 language: java
-dist: trusty
 jdk: oraclejdk8
-
+dist: trusty
 sudo: false
-
-after_success:
-  - mvn clean cobertura:cobertura coveralls:report
 
 install: mvn clean install -Dgpg.skip

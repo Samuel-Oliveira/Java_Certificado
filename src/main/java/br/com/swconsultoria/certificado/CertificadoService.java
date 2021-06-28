@@ -380,7 +380,9 @@ public class CertificadoService {
     }
 
     public static Certificado getCertificadoByCnpjCpf(String cnpjCpf) throws CertificadoException {
-        return listaCertificadosWindows().stream().filter(cert -> cnpjCpf.equals(cert.getCnpjCpf())).findFirst().orElseThrow(() -> new CertificadoException("Certificado não encontrado com CNPJ/CPF : " +
+        return listaCertificadosWindows().stream().filter(cert -> Optional.ofNullable(cert.getCnpjCpf()).orElse("")
+                .startsWith(cnpjCpf)).findFirst().orElseThrow(() -> new CertificadoException(
+                "Certificado não encontrado com CNPJ/CPF : " +
                 cnpjCpf));
     }
 
