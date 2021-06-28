@@ -162,7 +162,7 @@ class CertificadoServiceTest {
     @Test
     void inicaConfiguracoesParametrosNull() throws IOException, CertificadoException {
 
-        InputStream cacert = new FileInputStream(new File("Cacert"));
+        InputStream cacert = CertificadoServiceTest.class.getResourceAsStream("cacert");
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
 
         //Certificado Null

@@ -30,7 +30,6 @@ public class CacertUtil {
     /**
      * Metodo que gerar o arquivo Cacert com a lista de WebServices Enviada
      *
-     * @param listaEnderecos
      */
     public static void main(String[] args) {
 
@@ -88,8 +87,8 @@ public class CacertUtil {
             if (chain == null) {
                 System.err.println("Erro: "+"| Não pode obter cadeia de certificados");
             } else {
-                MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                MessageDigest sha1 = MessageDigest.getInstance("SHA1"); // lgtm[java/weak-cryptographic-algorithm]
+                MessageDigest md5 = MessageDigest.getInstance("MD5"); // lgtm[java/weak-cryptographic-algorithm]
                 for (int i = 0; i < chain.length; i++) {
                     X509Certificate cert = chain[i];
                     sha1.update(cert.getEncoded());
@@ -193,6 +192,7 @@ public class CacertUtil {
         listaWebServices.add("webservices.producaorestrita.esocial.gov.br");
 
         //eSOCIAL Produção
+        listaWebServices.add("webservices.download.esocial.gov.br");
         listaWebServices.add("webservices.consulta.esocial.gov.br");
         listaWebServices.add("webservices.envio.esocial.gov.br");
 
