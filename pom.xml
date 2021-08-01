@@ -19,7 +19,7 @@
         <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</developerConnection>
-        <tag>java_certificado-2.6</tag>
+        <tag>java_certificado-2.7</tag>
     </scm>
 
     <properties>
@@ -57,8 +57,8 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.69</version>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

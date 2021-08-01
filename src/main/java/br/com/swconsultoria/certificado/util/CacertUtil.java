@@ -21,8 +21,8 @@ public class CacertUtil {
     private static final int PORTA = 443;
 
     //ALTERE AQUI PARA GERAR
-    private static final String DESTINO_CACERT = "/home/samuel/cacert";
-    private static final String PASTA_JAVA = "/usr/lib/jvm/java-8-openjdk-amd64/";
+    private static final String DESTINO_CACERT = "cacert";
+    private static final String PASTA_JAVA = "D:/Programas/java/jdk1.8.0_291";
 
     //NAO ALTERE ESSA SENHA
     private static final String SENHA_PADRAO_CACERT = "changeit";

@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 @SuppressWarnings("WeakerAccess")
 public class CertificadoService {
 
-    private static final ASN1ObjectIdentifier CNPJ = new ASN1ObjectIdentifier("2.16.76.1.3.3");
-    private static final ASN1ObjectIdentifier CPF = new ASN1ObjectIdentifier("2.16.76.1.3.1");
+    private static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
+    private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
     private static boolean cacertProprio;
     private static String ultimoLog = "";
 
@@ -53,7 +53,7 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.6 - 28/06/2021            ");
+                System.err.println("              Java-Certificado - Versão 2.7 - 01/08/2021            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
@@ -64,7 +64,7 @@ public class CertificadoService {
                 }
                 System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
-                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 28/06/2021" : "Customizado"));
+                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 01/08/2021" : "Customizado"));
                 System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties() ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
                         " - Protocolo SSL: " + certificado.getSslProtocol());
                 System.err.println("####################################################################");
@@ -396,11 +396,11 @@ public class CertificadoService {
                                 byte[] data = (byte[]) a.get(1);
                                 try (ASN1InputStream is = new ASN1InputStream(data)) {
 
-                                    DLSequence derSequence = (DLSequence) is.readObject();
-                                    ASN1ObjectIdentifier tipo = ASN1ObjectIdentifier.getInstance(derSequence.getObjectAt(0));
+                                    DERSequence derSequence = (DERSequence) is.readObject();
+                                    DERObjectIdentifier tipo = DERObjectIdentifier.getInstance(derSequence.getObjectAt(0));
                                     if (CNPJ.equals(tipo) ||
                                             CPF.equals(tipo)) {
-                                        Object objeto = ((DLTaggedObject) ((DLTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
+                                        Object objeto = ((DERTaggedObject) ((DERTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
                                         if (objeto instanceof DEROctetString) {
                                             cnpjCpf[0] = new String(((DEROctetString) objeto).getOctets());
                                         } else if (objeto instanceof DERPrintableString) {
