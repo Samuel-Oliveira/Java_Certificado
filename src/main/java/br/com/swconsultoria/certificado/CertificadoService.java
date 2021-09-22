@@ -53,7 +53,7 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.7 - 01/08/2021            ");
+                System.err.println("              Java-Certificado - Versão 2.8 - 22/09/2021            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
@@ -64,7 +64,7 @@ public class CertificadoService {
                 }
                 System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
-                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 01/08/2021" : "Customizado"));
+                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 22/09/2021" : "Customizado"));
                 System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties() ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
                         " - Protocolo SSL: " + certificado.getSslProtocol());
                 System.err.println("####################################################################");

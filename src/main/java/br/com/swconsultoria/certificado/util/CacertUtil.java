@@ -22,7 +22,7 @@ public class CacertUtil {
 
     //ALTERE AQUI PARA GERAR
     private static final String DESTINO_CACERT = "cacert";
-    private static final String PASTA_JAVA = "D:/Programas/java/jdk1.8.0_291";
+    private static final String PASTA_JAVA = "C:/Program Files/Java/jdk1.8.0_301";
 
     //NAO ALTERE ESSA SENHA
     private static final String SENHA_PADRAO_CACERT = "changeit";
