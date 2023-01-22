@@ -49,10 +49,10 @@ public class AliasKeyManager implements X509KeyManager {
             System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
             return x509Certificates;
         } catch (KeyStoreException e) {
-            System.out.println("Não foi possível carregar o keystore para o alias:" + alias);
+            System.err.println("Não foi possível carregar o keystore para o alias:" + alias);
         }
 
-        return null;
+        return new X509Certificate[0];
     }
 
     public PrivateKey getPrivateKey(String alias) {
@@ -60,7 +60,7 @@ public class AliasKeyManager implements X509KeyManager {
             return (PrivateKey) ks.getKey(alias, password == null
                     ? null : password.toCharArray());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
         return null;
     }

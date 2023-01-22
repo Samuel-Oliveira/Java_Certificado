@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 @SuppressWarnings("WeakerAccess")
 public class CertificadoService {
 
-    private static final DERObjectIdentifier CNPJ = new DERObjectIdentifier("2.16.76.1.3.3");
-    private static final DERObjectIdentifier CPF = new DERObjectIdentifier("2.16.76.1.3.1");
+    private static final ASN1ObjectIdentifier CNPJ = new ASN1ObjectIdentifier("2.16.76.1.3.3");
+    private static final ASN1ObjectIdentifier CPF = new ASN1ObjectIdentifier("2.16.76.1.3.1");
     private static boolean cacertProprio;
     private static String ultimoLog = "";
 
@@ -53,7 +53,7 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.8 - 22/09/2021            ");
+                System.err.println("              Java-Certificado - Versão 2.9 - 21/01/2023            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
@@ -79,13 +79,10 @@ public class CertificadoService {
 
     public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
 
-        Optional.ofNullable(certificadoBytes).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo."));
-        Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula."));
-
         Certificado certificado = new Certificado();
         try {
-            certificado.setArquivoBytes(certificadoBytes);
-            certificado.setSenha(senha);
+            certificado.setArquivoBytes(Optional.ofNullable(certificadoBytes).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo.")));
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO_BYTES);
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
@@ -367,6 +364,8 @@ public class CertificadoService {
 
             for (long slot : slotList) {
                 CK_TOKEN_INFO tokenInfo = tmpPKCS11.C_GetTokenInfo(slot);
+                System.out.println("SLOTS: "+slot);
+                System.out.println("SN: "+serialNumber);
                 if (serialNumber.equals(String.valueOf(tokenInfo.serialNumber))) {
                     slotSelected = String.valueOf(slot);
                 }
@@ -396,19 +395,19 @@ public class CertificadoService {
                                 byte[] data = (byte[]) a.get(1);
                                 try (ASN1InputStream is = new ASN1InputStream(data)) {
 
-                                    DERSequence derSequence = (DERSequence) is.readObject();
-                                    DERObjectIdentifier tipo = DERObjectIdentifier.getInstance(derSequence.getObjectAt(0));
+                                    ASN1Sequence derSequence = (ASN1Sequence) is.readObject();
+                                    ASN1ObjectIdentifier tipo = ASN1ObjectIdentifier.getInstance(derSequence.getObjectAt(0));
                                     if (CNPJ.equals(tipo) ||
                                             CPF.equals(tipo)) {
-                                        Object objeto = ((DERTaggedObject) ((DERTaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
-                                        if (objeto instanceof DEROctetString) {
-                                            cnpjCpf[0] = new String(((DEROctetString) objeto).getOctets());
-                                        } else if (objeto instanceof DERPrintableString) {
-                                            cnpjCpf[0] = ((DERPrintableString) objeto).getString();
-                                        } else if (objeto instanceof DERUTF8String) {
-                                            cnpjCpf[0] = ((DERUTF8String) objeto).getString();
-                                        } else if (objeto instanceof DERIA5String) {
-                                            cnpjCpf[0] = ((DERIA5String) objeto).getString();
+                                        Object objeto = ((ASN1TaggedObject) ((ASN1TaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
+                                        if (objeto instanceof ASN1OctetString) {
+                                            cnpjCpf[0] = new String(((ASN1OctetString) objeto).getOctets());
+                                        } else if (objeto instanceof ASN1PrintableString) {
+                                            cnpjCpf[0] = ((ASN1PrintableString) objeto).getString();
+                                        } else if (objeto instanceof ASN1UTF8String) {
+                                            cnpjCpf[0] = ((ASN1UTF8String) objeto).getString();
+                                        } else if (objeto instanceof ASN1IA5String) {
+                                            cnpjCpf[0] = ((ASN1IA5String) objeto).getString();
                                         }
                                     }
                                     if (CPF.equals(tipo) &&

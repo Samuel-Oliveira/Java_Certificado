@@ -33,6 +33,7 @@ public class CertificadoException extends Exception {
 	/**
 	 * @return the message
 	 */
+	@Override
 	public String getMessage() {
 		return message;
 	}

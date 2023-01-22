@@ -29,7 +29,6 @@ public class CacertUtil {
 
     /**
      * Metodo que gerar o arquivo Cacert com a lista de WebServices Enviada
-     *
      */
     public static void main(String[] args) {
 
@@ -37,8 +36,7 @@ public class CacertUtil {
             List<String> lista = listaPadraoWebService();
 
             char[] senha = SENHA_PADRAO_CACERT.toCharArray();
-            File dir = new File(PASTA_JAVA);
-            File arquivoCacert = new File(PASTA_JAVA+"/jre/lib/security/cacerts");
+            File arquivoCacert = new File(PASTA_JAVA + "/jre/lib/security/cacerts");
 
             InputStream in = new FileInputStream(arquivoCacert);
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -58,7 +56,7 @@ public class CacertUtil {
 
     private static void get(String host, KeyStore ks) {
         try {
-            System.out.println("Info: Capturando ca: "+host);
+            System.out.println("Info: Capturando ca: " + host);
             SSLContext context = SSLContext.getInstance("TLS");
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(ks);
@@ -80,12 +78,12 @@ public class CacertUtil {
                  * cacert nao esta gerado.
                  */
             } catch (SSLException e) {
-                System.err.println("Erro: "+host + "| " + e.toString());
+                System.err.println("Erro: " + host + "| " + e.toString());
             }
 
             X509Certificate[] chain = tm.chain;
             if (chain == null) {
-                System.err.println("Erro: "+"| Não pode obter cadeia de certificados");
+                System.err.println("Erro: " + "| Não pode obter cadeia de certificados: " + host);
             } else {
                 MessageDigest sha1 = MessageDigest.getInstance("SHA1"); // lgtm[java/weak-cryptographic-algorithm]
                 MessageDigest md5 = MessageDigest.getInstance("MD5"); // lgtm[java/weak-cryptographic-algorithm]
@@ -99,7 +97,7 @@ public class CacertUtil {
                 }
             }
         } catch (NoSuchAlgorithmException | KeyStoreException | CertificateEncodingException | KeyManagementException | IOException e) {
-            System.err.println("Erro: "+host + "| " + e.toString());
+            System.err.println("Erro: " + host + "| " + e.toString());
         }
     }
 
@@ -201,6 +199,9 @@ public class CacertUtil {
 
         //EFD-REINF Produção
         listaWebServices.add("reinf.receita.fazenda.gov.br");
+
+        // GTIN
+        listaWebServices.add("dfe-servico.svrs.rs.gov.br");
 
         return listaWebServices;
     }

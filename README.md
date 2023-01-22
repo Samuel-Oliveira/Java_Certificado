@@ -1,4 +1,4 @@
-# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.8/jar) [![Build Status](https://travis-ci.org/Samuel-Oliveira/Java_Certificado.svg?branch=master)](https://travis-ci.org/Samuel-Oliveira/Java_Certificado) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/context:java) [![Total alerts](https://img.shields.io/lgtm/alerts/g/Samuel-Oliveira/Java_Certificado.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Samuel-Oliveira/Java_Certificado/alerts/)
+# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/2.9/jar)
 
 Projeto Java de Gerenciamentos de Certificado Digital
 
@@ -9,14 +9,14 @@ Projeto Java de Gerenciamentos de Certificado Digital
 <img src="https://swconsultoria.com.br/pix.png" width="200">
 
 Para Iniciar : 
-- Caso use Libs baixe o [java-certificado-2.8.jar](https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-2.8.jar) e o adicione às bibliotecas de Seu Projeto.
+- Caso use Libs baixe o [java-certificado-2.9.jar](https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-2.9.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Caso use Maven :
 ```
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>2.8</version>
+    <version>2.9</version>
 </dependency>
 ```
 
@@ -24,6 +24,11 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 
 ________________________________________________________________________________________________
 # Historico de Versões
+
+## v2.9 - 21/01/2023
+- Gerado novo Cacert
+- Atualizado Versão BouncyCastle para previnir vunerabilidades
+- Adicionado ToString no Certificado
 
 ## v2.8 - 22/09/2021
 - Gerado novo Cacert

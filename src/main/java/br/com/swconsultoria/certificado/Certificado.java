@@ -159,11 +159,11 @@ public class Certificado {
 	}
 
 	/**
-	 * @param arquivo_bytes
+	 * @param arquivoBytes
 	 *            the arquivo_bytes to set
 	 */
-	public void setArquivoBytes(byte[] arquivo_bytes) {
-		this.arquivoBytes = arquivo_bytes;
+	public void setArquivoBytes(byte[] arquivoBytes) {
+		this.arquivoBytes = arquivoBytes;
 	}
 
 	/**
@@ -215,4 +215,14 @@ public class Certificado {
     public void setTipoCertificado(TipoCertificadoEnum tipoCertificado) {
         this.tipoCertificado = tipoCertificado;
     }
+
+	@Override
+	public String toString() {
+		return "Certificado{" +
+				"nome='" + nome + '\'' +
+				", dataHoraVencimento=" + dataHoraVencimento +
+				", cnpjCpf='" + cnpjCpf + '\'' +
+				", tipoCertificado=" + tipoCertificado +
+				'}';
+	}
 }
