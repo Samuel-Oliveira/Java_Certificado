@@ -207,7 +207,7 @@ public class Certificado {
 
 	/**
 	 *Returns the marcaA3.
- 
+
 	 */
 	public String getMarcaA3() {
 		return marcaA3;
@@ -228,10 +228,7 @@ public class Certificado {
         this.tipoCertificado = tipoCertificado;
     }
 
-    /**
-     *Returns the numeroSerie.
- 
-     */
+    /** Returns the certificado numeroSerie */
     public BigInteger getNumeroSerie() {
         return numeroSerie;
     }
