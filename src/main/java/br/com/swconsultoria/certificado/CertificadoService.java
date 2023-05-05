@@ -110,6 +110,7 @@ public class CertificadoService {
         certificado.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         certificado.setDiasRestantes(diasRestantes(certificado));
         certificado.setValido(valido(certificado));
+        certificado.setNumeroSerie(certificate.getSerialNumber());
     }
 
     public static Certificado certificadoPfx(String caminhoCertificado, String senha) throws CertificadoException, FileNotFoundException {
