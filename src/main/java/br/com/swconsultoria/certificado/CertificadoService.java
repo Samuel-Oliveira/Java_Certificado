@@ -53,7 +53,7 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.9 - 21/01/2023            ");
+                System.err.println("              Java-Certificado - Versão 2.10 - 05/05/2023            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
@@ -64,7 +64,7 @@ public class CertificadoService {
                 }
                 System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
-                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 22/09/2021" : "Customizado"));
+                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 05/05/2023" : "Customizado"));
                 System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties() ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
                         " - Protocolo SSL: " + certificado.getSslProtocol());
                 System.err.println("####################################################################");
@@ -72,7 +72,7 @@ public class CertificadoService {
             }
 
         } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
-            throw new CertificadoException(e.getMessage());
+            throw new CertificadoException(e.getMessage(),e);
         }
 
     }
@@ -87,7 +87,7 @@ public class CertificadoService {
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
         return certificado;
@@ -132,7 +132,7 @@ public class CertificadoService {
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
         return certificado;
@@ -161,7 +161,7 @@ public class CertificadoService {
             return certificado;
         } catch (Exception e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
     }
@@ -194,7 +194,7 @@ public class CertificadoService {
             }
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados:" +
-                    ex.getMessage());
+                    ex.getMessage(),ex);
         }
         return listaCert;
     }
@@ -222,7 +222,7 @@ public class CertificadoService {
             return listaCert;
         } catch (KeyStoreException ex) {
             throw new CertificadoException("Erro ao Carregar Certificados A3:" +
-                    ex.getMessage());
+                    ex.getMessage(),ex);
         }
 
     }
@@ -296,7 +296,7 @@ public class CertificadoService {
                 throw new CertificadoException("Senha do Certificado inválida.");
 
             throw new CertificadoException("Erro Ao pegar KeyStore: " +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
     }
@@ -308,7 +308,7 @@ public class CertificadoService {
 
         } catch (KeyStoreException e) {
             throw new CertificadoException("Erro Ao pegar X509Certificate: " +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
     }
@@ -356,7 +356,7 @@ public class CertificadoService {
                 tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, null, true);
             } catch (Exception ex) {
                 throw new CertificadoException("Erro ao pegar Slot A3: " +
-                        e.getMessage());
+                        e.getMessage(),e);
             }
         }
 
@@ -373,7 +373,7 @@ public class CertificadoService {
             }
         } catch (Exception e) {
             throw new CertificadoException("Erro Ao pegar SlotA3: " +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
 
         return slotSelected;
@@ -423,7 +423,7 @@ public class CertificadoService {
 
         } catch (Exception e) {
             throw new CertificadoException("Erro ao pegar Documento do Certificado: " +
-                    e.getMessage());
+                    e.getMessage(),e);
         }
         return cnpjCpf[0];
     }

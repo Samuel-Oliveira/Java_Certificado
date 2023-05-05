@@ -71,7 +71,7 @@ class CertificadoProperties {
             cacert = file.getAbsolutePath();
             file.deleteOnExit();
         } catch (IOException ex) {
-            throw new CertificadoException(ex.getMessage());
+            throw new CertificadoException(ex.getMessage(),ex);
         }
 
         System.setProperty("javax.net.ssl.trustStore", cacert);

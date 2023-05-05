@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -23,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CertificadoServiceTest {
 
-    private final String CERTIFICADO_CPF = "CertificadoTesteCPF.pfx";
-    private final String CERTIFICADO_CNPJ = "CertificadoTesteCNPJ.pfx";
+    private final String CERTIFICADO_CPF = "NaoUsar_CPF.pfx";
+    private final String CERTIFICADO_CNPJ = "NaoUsar_CNPJ.pfx";
     private final String CPF = "99999999999";
     private final String CNPJ = "99999999999999";
     private final String SENHA = "123456";
@@ -72,6 +73,7 @@ class CertificadoServiceTest {
         assertEquals(certificado.getSslProtocol(), "TLSv1.2");
         assertFalse(certificado.isAtivarProperties());
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
+        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }
 
     @Test
@@ -86,6 +88,7 @@ class CertificadoServiceTest {
         assertEquals(certificado.getSslProtocol(), "TLSv1.2");
         assertFalse(certificado.isAtivarProperties());
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
+        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }
 
     @Test
@@ -129,6 +132,7 @@ class CertificadoServiceTest {
         assertEquals(certificado.getSslProtocol(), "TLSv1.3");
         assertEquals(certificado.isAtivarProperties(), false);
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO_BYTES);
+        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }
 
     @Test
