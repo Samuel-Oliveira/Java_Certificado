@@ -233,7 +233,9 @@ public class Certificado {
         return numeroSerie;
     }
 
-    /** @param numeroSerie the certificado numeroSerie to set. */
+    /** The certificado numeroSerie to set.
+	 * @param numeroSerie
+	 */
     public void setNumeroSerie(BigInteger numeroSerie) {
         this.numeroSerie = numeroSerie;
     }
