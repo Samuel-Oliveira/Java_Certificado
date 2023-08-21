@@ -8,11 +8,13 @@ import br.com.swconsultoria.certificado.exception.CertificadoException;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.security.Provider;
 import java.security.Security;
 
 /**
  * Classe para uso exclusivo em caso do Erro Unknow CA
  */
+@Deprecated
 class CertificadoProperties {
 
     static void inicia(Certificado certificado, InputStream iSCacert) throws CertificadoException, IOException {

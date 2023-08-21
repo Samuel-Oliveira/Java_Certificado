@@ -28,6 +28,8 @@ public class Certificado {
     private String marcaA3;
     private String serialToken;
     private boolean valido;
+
+	@Deprecated
     private boolean ativarProperties;
     private String sslProtocol;
     private BigInteger numeroSerie;
@@ -57,6 +59,7 @@ public class Certificado {
 		return ativarProperties;
 	}
 
+	@Deprecated
 	public void setAtivarProperties(boolean ativarProperties) {
 		this.ativarProperties = ativarProperties;
 	}
