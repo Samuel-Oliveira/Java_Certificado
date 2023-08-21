@@ -19,7 +19,11 @@ class CertificadoProperties {
 
         System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
         System.setProperty("java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol");
-        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        for (Provider p : Security.getProviders()) {
+            if (p.getName().equals("SunJSSE")) {
+                Security.addProvider(p);
+            }
+        }
 
         System.clearProperty("javax.net.ssl.keyStore");
         System.clearProperty("javax.net.ssl.keyStorePassword");
