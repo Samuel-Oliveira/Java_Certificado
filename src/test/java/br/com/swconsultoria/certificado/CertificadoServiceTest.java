@@ -71,7 +71,6 @@ class CertificadoServiceTest {
         assertTrue(certificado.isValido());
         assertEquals(certificado.getDiasRestantes(), Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)));
         assertEquals(certificado.getSslProtocol(), "TLSv1.2");
-        assertFalse(certificado.isAtivarProperties());
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
         assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }
@@ -86,7 +85,6 @@ class CertificadoServiceTest {
         assertTrue(certificado.isValido());
         assertEquals(certificado.getDiasRestantes(), Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)));
         assertEquals(certificado.getSslProtocol(), "TLSv1.2");
-        assertFalse(certificado.isAtivarProperties());
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
         assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }
@@ -130,7 +128,6 @@ class CertificadoServiceTest {
         assertEquals(certificado.getSslProtocol(), "TLSv1.2");
         certificado.setSslProtocol("TLSv1.3");
         assertEquals(certificado.getSslProtocol(), "TLSv1.3");
-        assertEquals(certificado.isAtivarProperties(), false);
         assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO_BYTES);
         assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
     }

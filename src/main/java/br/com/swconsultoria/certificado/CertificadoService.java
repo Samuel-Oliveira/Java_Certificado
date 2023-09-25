@@ -42,18 +42,14 @@ public class CertificadoService {
         try {
 
             KeyStore keyStore = getKeyStore(certificado);
-            if (certificado.isAtivarProperties()) {
-                CertificadoProperties.inicia(certificado, cacert);
-            } else {
-                SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(), cacert,
-                        certificado.getSslProtocol());
-                Protocol protocol = new Protocol("https", socketFactory, 443);
-                Protocol.registerProtocol("https", protocol);
-            }
+            SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(), cacert,
+                    certificado.getSslProtocol());
+            Protocol protocol = new Protocol("https", socketFactory, 443);
+            Protocol.registerProtocol("https", protocol);
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.11 - 21/08/2023            ");
+                System.err.println("              Java-Certificado - Versão 2.12 - 19/09/2023            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
@@ -64,9 +60,8 @@ public class CertificadoService {
                 }
                 System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
-                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default - Última Atualização: 21/08/2023" : "Customizado"));
-                System.err.println(" Conexão SSL: " + (certificado.isAtivarProperties() ? "Properties (Não Recomendado)" : "Socket Dinãmico") +
-                        " - Protocolo SSL: " + certificado.getSslProtocol());
+                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default" : "Customizado"));
+                System.err.println(" Conexão SSL:Socket Dinãmico - Protocolo SSL: " + certificado.getSslProtocol());
                 System.err.println("####################################################################");
                 ultimoLog = certificado.getCnpjCpf();
             }
@@ -277,16 +272,12 @@ public class CertificadoService {
                         slot = getSlot(certificado.getDllA3(), certificado.getSerialToken());
                     }
                     try (InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3(), slot)) {
-                        Provider provider = null;
-                        for (Provider p : Security.getProviders()) {
-                            if (p.getName().equals("SunJSSE")) {
-                                Security.addProvider(p);
-                                provider = p;
-                            }
-                        }
+                        Provider p = new sun.security.pkcs11.SunPKCS11(conf);
+                        Security.addProvider(p);
                         keyStore = KeyStore.getInstance("PKCS11");
-                        if (keyStore.getProvider() == null) {
-                            keyStore = KeyStore.getInstance("PKCS11", provider);
+                        if (keyStore.getProvider() ==
+                                null) {
+                            keyStore = KeyStore.getInstance("PKCS11", p);
                         }
                         keyStore.load(null, certificado.getSenha().toCharArray());
                     }
