@@ -49,7 +49,7 @@ public class CertificadoService {
 
             if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
                 System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.12 - 19/09/2023            ");
+                System.err.println("              Java-Certificado - Versão 2.13 - 26/11/2023            ");
                 if (Logger.getLogger("").isLoggable(Level.WARNING)) {
                     System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
                 }
