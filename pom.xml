@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>2.14-SNAPSHOT</version>
+    <version>3.00-SNAPSHOT</version>
     <name>Java_Certificado</name>
     <description>Api java para gerenciamento de certificados digitais</description>
     <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
@@ -19,7 +19,7 @@
         <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</developerConnection>
-        <tag>java_certificado-2.13</tag>
+        <tag>java_certificado-3.00</tag>
     </scm>
 
     <properties>
@@ -55,11 +55,6 @@
             <version>3.1</version>
         </dependency>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.70</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.3.1</version>
@@ -70,6 +65,12 @@
             <artifactId>jmockit</artifactId>
             <version>1.24</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

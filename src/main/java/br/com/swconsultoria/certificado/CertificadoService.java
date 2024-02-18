@@ -1,14 +1,12 @@
 package br.com.swconsultoria.certificado;
 
 import br.com.swconsultoria.certificado.exception.CertificadoException;
+import lombok.extern.java.Log;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.bouncycastle.asn1.*;
-import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
-import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
-import sun.security.pkcs11.wrapper.PKCS11;
-import sun.security.pkcs11.wrapper.PKCS11Exception;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -18,16 +16,17 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
+@Log
 public class CertificadoService {
 
-    private static final ASN1ObjectIdentifier CNPJ = new ASN1ObjectIdentifier("2.16.76.1.3.3");
-    private static final ASN1ObjectIdentifier CPF = new ASN1ObjectIdentifier("2.16.76.1.3.1");
     private static boolean cacertProprio;
     private static String ultimoLog = "";
+
+    private CertificadoService() {}
 
     public static void inicializaCertificado(Certificado certificado) throws CertificadoException {
         cacertProprio = true;
@@ -36,33 +35,30 @@ public class CertificadoService {
 
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
 
-        Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo."));
-        Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo."));
-
         try {
 
-            KeyStore keyStore = getKeyStore(certificado);
-            SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(), cacert,
+            KeyStore keyStore = getKeyStore(
+                    Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo.")));
+            SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(),
+                    Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo.")),
                     certificado.getSslProtocol());
             Protocol protocol = new Protocol("https", socketFactory, 443);
             Protocol.registerProtocol("https", protocol);
 
-            if (Logger.getLogger("").isLoggable(Level.SEVERE) && !ultimoLog.equals(certificado.getCnpjCpf())) {
-                System.err.println("####################################################################");
-                System.err.println("              Java-Certificado - Versão 2.13 - 26/11/2023            ");
-                if (Logger.getLogger("").isLoggable(Level.WARNING)) {
-                    System.err.println(" Samuel Olivera - samuel@swconsultoria.com.br ");
-                }
-                System.err.println(" Tipo: " + certificado.getTipoCertificado().toString() +
+            if (!ultimoLog.equals(certificado.getCnpjCpf())) {
+                log.info("####################################################################");
+                log.info("              Java-Certificado - Versão 3.00 - 18/02/2024");
+                log.info(" Samuel Olivera - samuel@swconsultoria.com.br ");
+                log.info(" Tipo: " + certificado.getTipoCertificado().toString() +
                         " - Vencimento: " + certificado.getDataHoraVencimento());
                 if (certificado.getTipoCertificado().equals(TipoCertificadoEnum.ARQUIVO)) {
-                    System.err.println(" Caminho: " + certificado.getArquivo());
+                    log.info(" Caminho: " + certificado.getArquivo());
                 }
-                System.err.println(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
+                log.info(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
                         " - Alias: " + certificado.getNome().toUpperCase());
-                System.err.println(" Arquivo Cacert: " + (cacertProprio ? "Default" : "Customizado"));
-                System.err.println(" Conexão SSL:Socket Dinãmico - Protocolo SSL: " + certificado.getSslProtocol());
-                System.err.println("####################################################################");
+                log.info(" Arquivo Cacert: " + (cacertProprio ? "Default" : "Customizado"));
+                log.info(" Conexão SSL:Socket Dinamico - Protocolo SSL: " + certificado.getSslProtocol());
+                log.info("####################################################################");
                 ultimoLog = certificado.getCnpjCpf();
             }
 
@@ -110,10 +106,8 @@ public class CertificadoService {
 
     public static Certificado certificadoPfx(String caminhoCertificado, String senha) throws CertificadoException, FileNotFoundException {
 
-        Optional.ofNullable(caminhoCertificado).orElseThrow(() -> new IllegalArgumentException("Caminho do Certificado não pode ser nulo."));
-        Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula."));
-
-        if (!Files.exists(Paths.get(caminhoCertificado)))
+        if (!Files.exists(Paths.get(
+                Optional.ofNullable(caminhoCertificado).orElseThrow(() -> new IllegalArgumentException("Caminho do Certificado não pode ser nulo.")))))
             throw new FileNotFoundException("Arquivo " +
                     caminhoCertificado +
                     " não existe");
@@ -122,7 +116,7 @@ public class CertificadoService {
 
         try {
             certificado.setArquivo(caminhoCertificado);
-            certificado.setSenha(senha);
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO);
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
@@ -133,27 +127,16 @@ public class CertificadoService {
         return certificado;
     }
 
-    public static Certificado certificadoA3(String marca, String dll, String senha) throws CertificadoException {
-        return certificadoA3(marca, dll, senha, null, null);
-    }
-
-    public static Certificado certificadoA3(String marca, String dll, String senha, String alias) throws CertificadoException {
-
-        return certificadoA3(marca, dll, senha, alias, null);
-
-    }
-
-    public static Certificado certificadoA3(String marca, String dll, String senha, String alias, String serialToken) throws CertificadoException {
+    public static Certificado certificadoA3(String senha, Provider provider) throws CertificadoException {
 
         try {
             Certificado certificado = new Certificado();
-            certificado.setMarcaA3(marca);
-            certificado.setSenha(senha);
-            certificado.setDllA3(dll);
             certificado.setTipoCertificado(TipoCertificadoEnum.TOKEN_A3);
-            certificado.setSerialToken(serialToken);
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setProvider(Optional.ofNullable(provider).orElseThrow(() -> new IllegalArgumentException("Provider não pode ser nulo.")));
             setDadosCertificado(certificado, null);
             return certificado;
+
         } catch (Exception e) {
             throw new CertificadoException("Erro ao carregar informações do certificado:" +
                     e.getMessage(), e);
@@ -194,15 +177,14 @@ public class CertificadoService {
         return listaCert;
     }
 
-    public static List<String> listaAliasCertificadosA3(String marca, String dll, String senha) throws CertificadoException {
+    public static List<String> listaAliasCertificadosA3(String senha, Provider provider) throws CertificadoException {
 
         try {
             List<String> listaCert = new ArrayList<>(20);
             Certificado certificado = new Certificado();
             certificado.setTipoCertificado(TipoCertificadoEnum.TOKEN_A3);
-            certificado.setMarcaA3(marca);
-            certificado.setSenha(senha);
-            certificado.setDllA3(dll);
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setProvider(Optional.ofNullable(provider).orElseThrow(() -> new IllegalArgumentException("Provider não pode ser nulo.")));
 
             Enumeration<String> aliasEnum = getKeyStore(certificado).aliases();
 
@@ -235,67 +217,6 @@ public class CertificadoService {
         return LocalDate.now().isBefore(certificado.getVencimento());
     }
 
-    public static KeyStore getKeyStore(Certificado certificado) throws CertificadoException {
-        try {
-            KeyStore keyStore;
-
-            switch (certificado.getTipoCertificado()) {
-                case REPOSITORIO_WINDOWS:
-                    keyStore = KeyStore.getInstance("Windows-MY", "SunMSCAPI");
-                    keyStore.load(null, null);
-                    return keyStore;
-                case REPOSITORIO_MAC:
-                    keyStore = KeyStore.getInstance("KeychainStore");
-                    keyStore.load(null, null);
-                    return keyStore;
-                case ARQUIVO:
-                    File file = new File(certificado.getArquivo());
-                    if (!file.exists()) {
-                        throw new CertificadoException("Certificado Digital não Encontrado");
-                    }
-                    keyStore = KeyStore.getInstance("PKCS12");
-                    try (ByteArrayInputStream bs = new ByteArrayInputStream(Files.readAllBytes(file.toPath()))) {
-                        keyStore.load(bs, certificado.getSenha().toCharArray());
-                    }
-                    return keyStore;
-                case ARQUIVO_BYTES:
-                    keyStore = KeyStore.getInstance("PKCS12");
-                    try (ByteArrayInputStream bs = new ByteArrayInputStream(certificado.getArquivoBytes())) {
-                        keyStore.load(bs, certificado.getSenha().toCharArray());
-                    }
-                    return keyStore;
-                case TOKEN_A3:
-                    System.setProperty("sun.security.ssl.allowUnsafeRenegotiation", "true");
-                    String slot = null;
-                    if (certificado.getSerialToken() !=
-                            null) {
-                        slot = getSlot(certificado.getDllA3(), certificado.getSerialToken());
-                    }
-                    try (InputStream conf = configA3(certificado.getMarcaA3(), certificado.getDllA3(), slot)) {
-                        Provider p = new sun.security.pkcs11.SunPKCS11(conf);
-                        Security.addProvider(p);
-                        keyStore = KeyStore.getInstance("PKCS11");
-                        if (keyStore.getProvider() ==
-                                null) {
-                            keyStore = KeyStore.getInstance("PKCS11", p);
-                        }
-                        keyStore.load(null, certificado.getSenha().toCharArray());
-                    }
-                    return keyStore;
-                default:
-                    throw new CertificadoException("Tipo de certificado não Configurado: " +
-                            certificado.getTipoCertificado());
-            }
-        } catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException | NoSuchProviderException e) {
-            if (Optional.ofNullable(e.getMessage()).orElse("").startsWith("keystore password was incorrect"))
-                throw new CertificadoException("Senha do Certificado inválida.");
-
-            throw new CertificadoException("Erro Ao pegar KeyStore: " +
-                    e.getMessage(), e);
-        }
-
-    }
-
     public static X509Certificate getCertificate(Certificado certificado, KeyStore keystore) throws CertificadoException {
         try {
 
@@ -308,70 +229,32 @@ public class CertificadoService {
 
     }
 
-    private static InputStream configA3(String marca, String dll, String slot)
-            throws UnsupportedEncodingException {
-
-        String slotInfo = "";
-
-        if (slot !=
-                null) {
-            slotInfo = "\n\r" +
-                    "slot = " +
-                    slot;
-        }
-
-        String conf = "name = " +
-                marca +
-                "\n\r" +
-                "library = " +
-                dll +
-                slotInfo +
-                "\n\r" +
-                "showInfo = true";
-        return new ByteArrayInputStream(conf.getBytes("UTF-8"));
-    }
-
-    private static String getSlot(String libraryPath, String serialNumber) throws IOException, CertificadoException {
-        CK_C_INITIALIZE_ARGS initArgs = new CK_C_INITIALIZE_ARGS();
-        String functionList = "C_GetFunctionList";
-
-        initArgs.flags = 0;
-        PKCS11 tmpPKCS11;
-        long[] slotList;
-        String slotSelected = null;
+    public static KeyStore getKeyStore(Certificado certificado) throws CertificadoException {
         try {
-            try {
-                tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, initArgs, false);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                throw ex;
-            }
-        } catch (PKCS11Exception e) {
-            try {
-                tmpPKCS11 = PKCS11.getInstance(libraryPath, functionList, null, true);
-            } catch (Exception ex) {
-                throw new CertificadoException("Erro ao pegar Slot A3: " +
-                        e.getMessage(), e);
-            }
-        }
 
-        try {
-            slotList = tmpPKCS11.C_GetSlotList(true);
-
-            for (long slot : slotList) {
-                CK_TOKEN_INFO tokenInfo = tmpPKCS11.C_GetTokenInfo(slot);
-                System.out.println("SLOTS: " + slot);
-                System.out.println("SN: " + serialNumber);
-                if (serialNumber.equals(String.valueOf(tokenInfo.serialNumber))) {
-                    slotSelected = String.valueOf(slot);
-                }
+            switch (certificado.getTipoCertificado()) {
+                case REPOSITORIO_WINDOWS:
+                    return KeyStoreService.getKeyStoreRepositorioWindows();
+                case REPOSITORIO_MAC:
+                    return KeyStoreService.getKeyStoreRepositorioMac();
+                case ARQUIVO:
+                    return KeyStoreService.getKeyStoreArquivo(certificado);
+                case ARQUIVO_BYTES:
+                    return KeyStoreService.getKeyStoreArquivoByte(certificado.getArquivoBytes(), certificado);
+                case TOKEN_A3:
+                    return KeyStoreService.getKeyStoreA3(certificado);
+                default:
+                    throw new CertificadoException("Tipo de certificado não Configurado: " +
+                            certificado.getTipoCertificado());
             }
         } catch (Exception e) {
-            throw new CertificadoException("Erro Ao pegar SlotA3: " +
+            if (Optional.ofNullable(e.getMessage()).orElse("").startsWith("keystore password was incorrect"))
+                throw new CertificadoException("Senha do Certificado inválida.");
+
+            throw new CertificadoException("Erro Ao pegar KeyStore: " +
                     e.getMessage(), e);
         }
 
-        return slotSelected;
     }
 
     public static Certificado getCertificadoByCnpjCpf(String cnpjCpf) throws CertificadoException {
@@ -381,46 +264,21 @@ public class CertificadoService {
                         cnpjCpf));
     }
 
-    private static String getDocumentoFromCertificado(X509Certificate certificate) throws CertificadoException {
+    public static String getDocumentoFromCertificado(X509Certificate cert) {
 
-        final String[] cnpjCpf = {""};
-        try {
-            Optional.ofNullable(certificate.getSubjectAlternativeNames())
-                    .ifPresent(lista ->
-                            lista.stream().filter(x -> x.get(0).equals(0)).forEach(a -> {
-                                byte[] data = (byte[]) a.get(1);
-                                try (ASN1InputStream is = new ASN1InputStream(data)) {
+        String texto = cert.getSubjectX500Principal().getName();
 
-                                    ASN1Sequence derSequence = (ASN1Sequence) is.readObject();
-                                    ASN1ObjectIdentifier tipo = ASN1ObjectIdentifier.getInstance(derSequence.getObjectAt(0));
-                                    if (CNPJ.equals(tipo) ||
-                                            CPF.equals(tipo)) {
-                                        Object objeto = ((ASN1TaggedObject) ((ASN1TaggedObject) derSequence.getObjectAt(1)).getObject()).getObject();
-                                        if (objeto instanceof ASN1OctetString) {
-                                            cnpjCpf[0] = new String(((ASN1OctetString) objeto).getOctets());
-                                        } else if (objeto instanceof ASN1PrintableString) {
-                                            cnpjCpf[0] = ((ASN1PrintableString) objeto).getString();
-                                        } else if (objeto instanceof ASN1UTF8String) {
-                                            cnpjCpf[0] = ((ASN1UTF8String) objeto).getString();
-                                        } else if (objeto instanceof ASN1IA5String) {
-                                            cnpjCpf[0] = ((ASN1IA5String) objeto).getString();
-                                        }
-                                    }
-                                    if (CPF.equals(tipo) &&
-                                            cnpjCpf[0].length() >
-                                                    25) {
-                                        cnpjCpf[0] = cnpjCpf[0].substring(8, 19);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }));
+        // Padrão ajustado para buscar CPF (11 dígitos) ou CNPJ (14 dígitos)
+        Pattern pattern = Pattern.compile("(?<!\\d)(\\d{14}|\\d{11})(?!\\d)");
+        Matcher matcher = pattern.matcher(texto);
 
-        } catch (Exception e) {
-            throw new CertificadoException("Erro ao pegar Documento do Certificado: " +
-                    e.getMessage(), e);
+        while (matcher.find()) {
+            String documento = matcher.group();
+            if (documento.length() == 14 || documento.length() == 11) {
+                return documento;
+            }
         }
-        return cnpjCpf[0];
+        return "";
     }
 
 }

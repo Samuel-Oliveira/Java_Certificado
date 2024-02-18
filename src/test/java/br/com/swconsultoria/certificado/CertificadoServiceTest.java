@@ -64,38 +64,39 @@ class CertificadoServiceTest {
     @Test
     void certificadoPfxCPF() throws CertificadoException, FileNotFoundException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CPF, SENHA);
-        assertEquals(certificado.getNome(), "certificado cpf teste");
-        assertEquals(certificado.getSenha(), SENHA);
-        assertEquals(certificado.getCnpjCpf(), CPF);
-        assertEquals(certificado.getVencimento(), LocalDate.of(2029, 5, 16));
+        assertEquals("certificado cpf teste", certificado.getNome());
+        assertEquals(SENHA,certificado.getSenha());
+        assertEquals(CPF,certificado.getCnpjCpf());
+        assertEquals( LocalDate.of(2029, 5, 16),certificado.getVencimento());
         assertTrue(certificado.isValido());
-        assertEquals(certificado.getDiasRestantes(), Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)));
-        assertEquals(certificado.getSslProtocol(), "TLSv1.2");
-        assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
-        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
+        assertEquals("TLSv1.2",certificado.getSslProtocol());
+        assertEquals(TipoCertificadoEnum.ARQUIVO, certificado.getTipoCertificado());
+        assertEquals(new BigInteger("219902325555"), certificado.getNumeroSerie());
     }
 
     @Test
     void certificadoPfxCNPJ() throws CertificadoException, FileNotFoundException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
-        assertEquals(certificado.getNome(), "certificado cnpj teste");
-        assertEquals(certificado.getSenha(), SENHA);
-        assertEquals(certificado.getCnpjCpf(), CNPJ);
-        assertEquals(certificado.getVencimento(), LocalDate.of(2029, 5, 16));
+        assertEquals("certificado cnpj teste", certificado.getNome());
+        assertEquals(SENHA,certificado.getSenha());
+        assertEquals(CNPJ,certificado.getCnpjCpf());
+        assertEquals( LocalDate.of(2029, 5, 16),certificado.getVencimento());
         assertTrue(certificado.isValido());
-        assertEquals(certificado.getDiasRestantes(), Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)));
-        assertEquals(certificado.getSslProtocol(), "TLSv1.2");
-        assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO);
-        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
+        assertEquals("TLSv1.2", certificado.getSslProtocol());
+        assertEquals(TipoCertificadoEnum.ARQUIVO, certificado.getTipoCertificado());
+        assertEquals(new BigInteger("219902325555"),certificado.getNumeroSerie());
     }
 
     @Test
-    void certificadoPfxByteParametroNull() {
+    void certificadoPfxByteParametroNull() throws IOException {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Certificado certificado = CertificadoService.certificadoPfxBytes(null, SENHA);
         });
+
+        byte[] bytes = Files.readAllBytes(Paths.get(CERTIFICADO_CNPJ));
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            byte[] bytes = Files.readAllBytes(Paths.get(CERTIFICADO_CNPJ));
             Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, null);
         });
     }
@@ -119,17 +120,17 @@ class CertificadoServiceTest {
     void certificadoPfxBytes() throws CertificadoException, IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(CERTIFICADO_CNPJ));
         Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, SENHA);
-        assertEquals(certificado.getNome(), "certificado cnpj teste");
-        assertEquals(certificado.getSenha(), SENHA);
-        assertEquals(certificado.getCnpjCpf(), CNPJ);
-        assertEquals(certificado.getVencimento(), LocalDate.of(2029, 5, 16));
-        assertEquals(certificado.isValido(), true);
-        assertEquals(certificado.getDiasRestantes(), Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)));
-        assertEquals(certificado.getSslProtocol(), "TLSv1.2");
+        assertEquals("certificado cnpj teste", certificado.getNome());
+        assertEquals(SENHA,certificado.getSenha());
+        assertEquals(CNPJ,certificado.getCnpjCpf());
+        assertEquals(LocalDate.of(2029, 5, 16),certificado.getVencimento());
+        assertEquals(true, certificado.isValido());
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
+        assertEquals("TLSv1.2", certificado.getSslProtocol());
         certificado.setSslProtocol("TLSv1.3");
-        assertEquals(certificado.getSslProtocol(), "TLSv1.3");
-        assertEquals(certificado.getTipoCertificado(), TipoCertificadoEnum.ARQUIVO_BYTES);
-        assertEquals(certificado.getNumeroSerie(), new BigInteger("219902325555"));
+        assertEquals("TLSv1.3", certificado.getSslProtocol());
+        assertEquals(TipoCertificadoEnum.ARQUIVO_BYTES, certificado.getTipoCertificado());
+        assertEquals(new BigInteger("219902325555"),certificado.getNumeroSerie());
     }
 
     @Test
@@ -160,9 +161,11 @@ class CertificadoServiceTest {
     }
 
     @Test
-    void inicaConfiguracoesCorretamente() throws IOException, CertificadoException {
-        Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
-        CertificadoService.inicializaCertificado(certificado);
+    void inicaConfiguracoesCorretamente() {
+        Assertions.assertDoesNotThrow( () -> {
+            Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
+            CertificadoService.inicializaCertificado(certificado);
+        });
     }
 
     @Test

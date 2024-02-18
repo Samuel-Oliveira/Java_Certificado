@@ -5,6 +5,9 @@ package br.com.swconsultoria.certificado;
  * Data: 03/07/2019 - 02:00
  */
 
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+
 import javax.net.ssl.X509KeyManager;
 import java.net.Socket;
 import java.security.KeyStore;
@@ -14,17 +17,13 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
-public class AliasKeyManager implements X509KeyManager {
+@AllArgsConstructor
+@Log
+class AliasKeyManager implements X509KeyManager {
 
     private KeyStore ks;
     private String alias;
     private String password;
-
-    AliasKeyManager(KeyStore ks, String alias, String password) {
-        this.ks = ks;
-        this.alias = alias;
-        this.password = password;
-    }
 
     public String chooseClientAlias(String[] str, Principal[] principal, Socket socket) {
         return alias;
@@ -49,7 +48,7 @@ public class AliasKeyManager implements X509KeyManager {
             System.arraycopy(certificates, 0, x509Certificates, 0, certificates.length);
             return x509Certificates;
         } catch (KeyStoreException e) {
-            System.err.println("Não foi possível carregar o keystore para o alias:" + alias);
+           log.severe("Não foi possível carregar o keystore para o alias:" + alias);
         }
 
         return new X509Certificate[0];
@@ -60,7 +59,7 @@ public class AliasKeyManager implements X509KeyManager {
             return (PrivateKey) ks.getKey(alias, password == null
                     ? null : password.toCharArray());
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            log.severe(e.getMessage());
         }
         return null;
     }

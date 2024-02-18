@@ -23,6 +23,7 @@ import java.security.cert.CertificateException;
 
 class SocketFactoryDinamico implements ProtocolSocketFactory {
 
+    private static final char[] SENHA_CACERT = "changeit".toCharArray();
     private final KeyStore keyStore;
     private final String alias;
     private final String senha;
@@ -41,10 +42,11 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
 
     @Override
     public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException {
-        final Socket socket = this.ssl.getSocketFactory().createSocket();
-        socket.bind(new InetSocketAddress(localAddress, localPort));
-        socket.connect(new InetSocketAddress(host, port), 60000);
-        return socket;
+        try (final Socket socket = this.ssl.getSocketFactory().createSocket()){
+            socket.bind(new InetSocketAddress(localAddress, localPort));
+            socket.connect(new InetSocketAddress(host, port), 60000);
+            return socket;
+        }
     }
 
     @Override
@@ -72,7 +74,7 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
     private TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        trustStore.load(fileCacerts, "changeit".toCharArray());
+        trustStore.load(fileCacerts, SENHA_CACERT);
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
     }

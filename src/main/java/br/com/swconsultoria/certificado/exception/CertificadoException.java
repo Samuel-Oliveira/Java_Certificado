@@ -5,40 +5,17 @@ package br.com.swconsultoria.certificado.exception;
  *
  * @author Samuel Oliveira - samuk.exe@hotmail.com - www.swconsultoria.com.br
  */
-@SuppressWarnings("WeakerAccess")
-public class CertificadoException extends Exception {
 
-	private String message;
-	
-	/**
-	 * Construtor da classe.
-	 * 
-	 * @param e
-	 */
-	public CertificadoException(Throwable e) {
-		super(e);
+public class CertificadoException extends Exception {
+	public CertificadoException(String message) {
+		super(message);
 	}
 
 	public CertificadoException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	/**
-	 * Construtor da classe.
-	 * 
-	 * @param message
-	 */
-	public CertificadoException(String message) {
-		this((Throwable) null);
-		this.message = message;
+	public CertificadoException(Throwable cause) {
+		super(cause);
 	}
-
-	/**
-	 * @return the message
-	 */
-	@Override
-	public String getMessage() {
-		return message;
-	}
-
 }
