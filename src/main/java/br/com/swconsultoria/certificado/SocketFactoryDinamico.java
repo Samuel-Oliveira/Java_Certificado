@@ -42,11 +42,10 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
 
     @Override
     public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException {
-        try (final Socket socket = this.ssl.getSocketFactory().createSocket()){
-            socket.bind(new InetSocketAddress(localAddress, localPort));
-            socket.connect(new InetSocketAddress(host, port), 60000);
-            return socket;
-        }
+        final Socket socket = this.ssl.getSocketFactory().createSocket();
+        socket.bind(new InetSocketAddress(localAddress, localPort));
+        socket.connect(new InetSocketAddress(host, port), 60000);
+        return socket;
     }
 
     @Override

@@ -23,8 +23,10 @@ import java.util.regex.Pattern;
 @Log
 public class CertificadoService {
 
+    private static final String SENHA_NAO_PODE_SER_NULA = "Senha não pode ser nula.";
+    private static final String CERTIFICADO_NAO_PODE_SER_NULO = "Certificado não pode ser nulo.";
+    private static final String ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO = "Erro ao carregar informações do certificado:";
     private static boolean cacertProprio;
-    private static String ultimoLog = "";
 
     private CertificadoService() {}
 
@@ -38,29 +40,23 @@ public class CertificadoService {
         try {
 
             KeyStore keyStore = getKeyStore(
-                    Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo.")));
+                    Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO)));
             SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(),
                     Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo.")),
                     certificado.getSslProtocol());
             Protocol protocol = new Protocol("https", socketFactory, 443);
             Protocol.registerProtocol("https", protocol);
 
-            if (!ultimoLog.equals(certificado.getCnpjCpf())) {
-                log.info("####################################################################");
-                log.info("              Java-Certificado - Versão 3.00 - 18/02/2024");
-                log.info(" Samuel Olivera - samuel@swconsultoria.com.br ");
-                log.info(" Tipo: " + certificado.getTipoCertificado().toString() +
-                        " - Vencimento: " + certificado.getDataHoraVencimento());
-                if (certificado.getTipoCertificado().equals(TipoCertificadoEnum.ARQUIVO)) {
-                    log.info(" Caminho: " + certificado.getArquivo());
-                }
-                log.info(" Cnpj/Cpf: " + certificado.getCnpjCpf() +
-                        " - Alias: " + certificado.getNome().toUpperCase());
-                log.info(" Arquivo Cacert: " + (cacertProprio ? "Default" : "Customizado"));
-                log.info(" Conexão SSL:Socket Dinamico - Protocolo SSL: " + certificado.getSslProtocol());
-                log.info("####################################################################");
-                ultimoLog = certificado.getCnpjCpf();
-            }
+            log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
+                    "| VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
+                    "3.1",
+                    certificado.getCnpjCpf(),
+                    certificado.getDataHoraVencimento(),
+                    certificado.getNome().toUpperCase(),
+                    certificado.getTipoCertificado().toString(),
+                    certificado.getArquivo(),
+                    cacertProprio ? "Default" : "Customizado",
+                    certificado.getSslProtocol()));
 
         } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
             throw new CertificadoException(e.getMessage(), e);
@@ -72,13 +68,12 @@ public class CertificadoService {
 
         Certificado certificado = new Certificado();
         try {
-            certificado.setArquivoBytes(Optional.ofNullable(certificadoBytes).orElseThrow(() -> new IllegalArgumentException("Certificado não pode ser nulo.")));
-            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setArquivoBytes(Optional.ofNullable(certificadoBytes).orElseThrow(() -> new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO)));
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException(SENHA_NAO_PODE_SER_NULA)));
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO_BYTES);
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
-            throw new CertificadoException("Erro ao carregar informações do certificado:" +
-                    e.getMessage(), e);
+            throw new CertificadoException(ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO +                    e.getMessage(), e);
         }
 
         return certificado;
@@ -116,11 +111,11 @@ public class CertificadoService {
 
         try {
             certificado.setArquivo(caminhoCertificado);
-            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException(SENHA_NAO_PODE_SER_NULA)));
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO);
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
-            throw new CertificadoException("Erro ao carregar informações do certificado:" +
+            throw new CertificadoException(ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO +
                     e.getMessage(), e);
         }
 
@@ -132,13 +127,13 @@ public class CertificadoService {
         try {
             Certificado certificado = new Certificado();
             certificado.setTipoCertificado(TipoCertificadoEnum.TOKEN_A3);
-            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException(SENHA_NAO_PODE_SER_NULA)));
             certificado.setProvider(Optional.ofNullable(provider).orElseThrow(() -> new IllegalArgumentException("Provider não pode ser nulo.")));
             setDadosCertificado(certificado, null);
             return certificado;
 
         } catch (Exception e) {
-            throw new CertificadoException("Erro ao carregar informações do certificado:" +
+            throw new CertificadoException(ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO +
                     e.getMessage(), e);
         }
 
@@ -183,7 +178,7 @@ public class CertificadoService {
             List<String> listaCert = new ArrayList<>(20);
             Certificado certificado = new Certificado();
             certificado.setTipoCertificado(TipoCertificadoEnum.TOKEN_A3);
-            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException("Senha não pode ser nula.")));
+            certificado.setSenha(Optional.ofNullable(senha).orElseThrow(() -> new IllegalArgumentException(SENHA_NAO_PODE_SER_NULA)));
             certificado.setProvider(Optional.ofNullable(provider).orElseThrow(() -> new IllegalArgumentException("Provider não pode ser nulo.")));
 
             Enumeration<String> aliasEnum = getKeyStore(certificado).aliases();

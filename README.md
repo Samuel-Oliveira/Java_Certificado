@@ -1,4 +1,4 @@
-# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.00/jar)
+# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.1/jar)
 
 Projeto Java de Gerenciamentos de Certificado Digital
 
@@ -9,14 +9,14 @@ Projeto Java de Gerenciamentos de Certificado Digital
 <img src="https://swconsultoria.com.br/pix.png" width="200">
 
 Para Iniciar : 
-- Caso use Libs baixe o [java-certificado-3.00.jar](https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-3.00.jar) e o adicione às bibliotecas de Seu Projeto.
+- Caso use Libs baixe o [java-certificado-3.1.jar](https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-3.1.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Caso use Maven :
 ```
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>3.00</version>
+    <version>3.1</version>
 </dependency>
 ```
 
@@ -25,7 +25,11 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
-## v3.00 - 18/02/2024
+## v3.1 - 21/02/2024
+- Corrigido fechamento do Socket
+- Melhorado logs API
+
+## v3.0 - 18/02/2024
 - Gerado novo Cacert
 - Refatoracao Geral do Codigo
 - Removido dependencia Bouncycastle
