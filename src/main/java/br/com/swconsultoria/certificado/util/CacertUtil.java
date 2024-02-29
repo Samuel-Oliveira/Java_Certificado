@@ -201,7 +201,14 @@ public class CacertUtil {
         listaWebServices.add("reinf.receita.fazenda.gov.br");
 
         // GTIN
-        listaWebServices.add("dfe-servico.svrs.rs.gov.br");
+        listaWebServices.add("wshomo.pelotas.rs.gov.br");
+        // GTIN
+        listaWebServices.add("ws.pelotas.rs.gov.br");
+
+        //NFSE
+        listaWebServices.add("wshomo.pelotas.rs.gov.br");
+        listaWebServices.add("ws.pelotas.rs.gov.br");
+        listaWebServices.add("tributacao.vilavelha.es.gov.br");
 
         return listaWebServices;
     }
