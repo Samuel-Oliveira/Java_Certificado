@@ -48,8 +48,9 @@ public class CertificadoService {
             Protocol.registerProtocol("https", protocol);
 
             log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
-                    "| VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                    "3.1",
+                    "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
+                    "3.2",
+                    "04/03/2024",
                     certificado.getCnpjCpf(),
                     certificado.getDataHoraVencimento(),
                     certificado.getNome().toUpperCase(),
@@ -90,7 +91,7 @@ public class CertificadoService {
         }
 
         X509Certificate certificate = getCertificate(certificado, keyStore);
-        certificado.setCnpjCpf(getDocumentoFromCertificado(certificate));
+        certificado.setCnpjCpf(getDocumentoFromCertificado(certificate.getSubjectX500Principal().getName()));
         Date dataValidade = dataValidade(certificate);
         certificado.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         certificado.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
@@ -259,20 +260,27 @@ public class CertificadoService {
                         cnpjCpf));
     }
 
-    public static String getDocumentoFromCertificado(X509Certificate cert) {
+    public static String getDocumentoFromCertificado(String texto) {
 
-        String texto = cert.getSubjectX500Principal().getName();
+        // Primeiro, tenta encontrar CNPJs
+        Pattern patternCNPJ = Pattern.compile("(?<!\\d)\\d{14}(?!\\d)");
+        Matcher matcherCNPJ = patternCNPJ.matcher(texto);
 
-        // Padrão ajustado para buscar CPF (11 dígitos) ou CNPJ (14 dígitos)
-        Pattern pattern = Pattern.compile("(?<!\\d)(\\d{14}|\\d{11})(?!\\d)");
-        Matcher matcher = pattern.matcher(texto);
+        if (matcherCNPJ.find()) {
+            // Se encontrar um CNPJ, retorna ele
+            return matcherCNPJ.group();
+        } else {
+            // Se não encontrar CNPJs, tenta encontrar CPFs
+            Pattern patternCPF = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
+            Matcher matcherCPF = patternCPF.matcher(texto);
 
-        while (matcher.find()) {
-            String documento = matcher.group();
-            if (documento.length() == 14 || documento.length() == 11) {
-                return documento;
+            if (matcherCPF.find()) {
+                // Se encontrar um CPF, retorna ele
+                return matcherCPF.group();
             }
         }
+
+        // Se não encontrar nenhum documento, retorna string vazia
         return "";
     }
 

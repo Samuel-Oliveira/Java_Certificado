@@ -6,7 +6,9 @@ import mockit.MockUp;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -65,12 +67,12 @@ class CertificadoServiceTest {
     void certificadoPfxCPF() throws CertificadoException, FileNotFoundException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CPF, SENHA);
         assertEquals("certificado cpf teste", certificado.getNome());
-        assertEquals(SENHA,certificado.getSenha());
-        assertEquals(CPF,certificado.getCnpjCpf());
-        assertEquals( LocalDate.of(2029, 5, 16),certificado.getVencimento());
+        assertEquals(SENHA, certificado.getSenha());
+        assertEquals(CPF, certificado.getCnpjCpf());
+        assertEquals(LocalDate.of(2029, 5, 16), certificado.getVencimento());
         assertTrue(certificado.isValido());
-        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
-        assertEquals("TLSv1.2",certificado.getSslProtocol());
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)), certificado.getDiasRestantes());
+        assertEquals("TLSv1.2", certificado.getSslProtocol());
         assertEquals(TipoCertificadoEnum.ARQUIVO, certificado.getTipoCertificado());
         assertEquals(new BigInteger("219902325555"), certificado.getNumeroSerie());
     }
@@ -79,14 +81,14 @@ class CertificadoServiceTest {
     void certificadoPfxCNPJ() throws CertificadoException, FileNotFoundException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
         assertEquals("certificado cnpj teste", certificado.getNome());
-        assertEquals(SENHA,certificado.getSenha());
-        assertEquals(CNPJ,certificado.getCnpjCpf());
-        assertEquals( LocalDate.of(2029, 5, 16),certificado.getVencimento());
+        assertEquals(SENHA, certificado.getSenha());
+        assertEquals(CNPJ, certificado.getCnpjCpf());
+        assertEquals(LocalDate.of(2029, 5, 16), certificado.getVencimento());
         assertTrue(certificado.isValido());
-        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)), certificado.getDiasRestantes());
         assertEquals("TLSv1.2", certificado.getSslProtocol());
         assertEquals(TipoCertificadoEnum.ARQUIVO, certificado.getTipoCertificado());
-        assertEquals(new BigInteger("219902325555"),certificado.getNumeroSerie());
+        assertEquals(new BigInteger("219902325555"), certificado.getNumeroSerie());
     }
 
     @Test
@@ -121,16 +123,16 @@ class CertificadoServiceTest {
         byte[] bytes = Files.readAllBytes(Paths.get(CERTIFICADO_CNPJ));
         Certificado certificado = CertificadoService.certificadoPfxBytes(bytes, SENHA);
         assertEquals("certificado cnpj teste", certificado.getNome());
-        assertEquals(SENHA,certificado.getSenha());
-        assertEquals(CNPJ,certificado.getCnpjCpf());
-        assertEquals(LocalDate.of(2029, 5, 16),certificado.getVencimento());
+        assertEquals(SENHA, certificado.getSenha());
+        assertEquals(CNPJ, certificado.getCnpjCpf());
+        assertEquals(LocalDate.of(2029, 5, 16), certificado.getVencimento());
         assertEquals(true, certificado.isValido());
-        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)),certificado.getDiasRestantes());
+        assertEquals(Long.valueOf(LocalDate.now().until(LocalDate.of(2029, 5, 16), ChronoUnit.DAYS)), certificado.getDiasRestantes());
         assertEquals("TLSv1.2", certificado.getSslProtocol());
         certificado.setSslProtocol("TLSv1.3");
         assertEquals("TLSv1.3", certificado.getSslProtocol());
         assertEquals(TipoCertificadoEnum.ARQUIVO_BYTES, certificado.getTipoCertificado());
-        assertEquals(new BigInteger("219902325555"),certificado.getNumeroSerie());
+        assertEquals(new BigInteger("219902325555"), certificado.getNumeroSerie());
     }
 
     @Test
@@ -142,7 +144,7 @@ class CertificadoServiceTest {
         new MockUp<CertificadoService>() {
             @Mock
             public Certificado getCertificadoByCnpjCpf(String cpfCnpj) {
-                return  Stream.of(certCPF, certCNPJ).filter(cert -> Optional.ofNullable(cert.getCnpjCpf()).orElse("")
+                return Stream.of(certCPF, certCNPJ).filter(cert -> Optional.ofNullable(cert.getCnpjCpf()).orElse("")
                         .startsWith(cpfCnpj)).findFirst().orElse(null);
             }
         };
@@ -162,7 +164,7 @@ class CertificadoServiceTest {
 
     @Test
     void inicaConfiguracoesCorretamente() {
-        Assertions.assertDoesNotThrow( () -> {
+        Assertions.assertDoesNotThrow(() -> {
             Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
             CertificadoService.inicializaCertificado(certificado);
         });
@@ -176,12 +178,30 @@ class CertificadoServiceTest {
 
         //Certificado Null
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-            CertificadoService.inicializaCertificado(null)
+                CertificadoService.inicializaCertificado(null)
         );
         //Cacert Null
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-            CertificadoService.inicializaCertificado(null)
+                CertificadoService.inicializaCertificado(null)
         );
+    }
+
+    @Test
+    void extraiCpfCnpjCorretamente() {
+        String textoCnpj = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CNPJ=07364617000135";
+        assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCnpj));
+
+        String textoCpf = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CPF=99999999999";
+        assertEquals("99999999999", CertificadoService.getDocumentoFromCertificado(textoCpf));
+
+        String textoCnpjeCPF = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CNPJ=07364617000135, CPF=99999999999";
+        assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCnpjeCPF));
+
+        String textoCpfECNPJ = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CPF=99999999999, CNPJ=07364617000135";
+        assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCpfECNPJ));
+
+        String textoSemNenhumDocumento = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB";
+        assertEquals("", CertificadoService.getDocumentoFromCertificado(textoSemNenhumDocumento));
     }
 
 }
