@@ -1,4 +1,4 @@
-[![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.1/jar)
+[![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.2/jar)
 
 ***Projeto Java de Gerenciamentos de Certificado Digital***
 
@@ -11,13 +11,13 @@
 </p>
 
 Para Iniciar : 
-- Caso use Libs baixe o java-certificado-3.1.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-3.1.jar) e o adicione às bibliotecas de Seu Projeto.
+- Caso use Libs baixe o java-certificado-3.2.jar (https://github.com/Samuel-Oliveira/Java_Certificado/raw/master/java_certificado-3.2.jar) e o adicione às bibliotecas de Seu Projeto.
 
 - Caso use Maven :
 ```xml
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>3.1</version>
+    <version>3.2</version>
 </dependency>
 ```

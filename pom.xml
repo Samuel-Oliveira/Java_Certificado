@@ -19,7 +19,7 @@
         <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</developerConnection>
-        <tag>java_certificado-3.1</tag>
+        <tag>java_certificado-3.2</tag>
     </scm>
 
     <properties>
