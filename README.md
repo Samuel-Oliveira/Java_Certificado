@@ -25,6 +25,9 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v3.2 - 05/03/2024
+- Ajustes Metodo de extracao CNPJ e CPF
+
 ## v3.1 - 21/02/2024
 - Corrigido fechamento do Socket
 - Melhorado logs API
