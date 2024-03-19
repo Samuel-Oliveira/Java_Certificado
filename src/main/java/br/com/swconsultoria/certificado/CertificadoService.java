@@ -28,7 +28,8 @@ public class CertificadoService {
     private static final String ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO = "Erro ao carregar informações do certificado:";
     private static boolean cacertProprio;
 
-    private CertificadoService() {}
+    private CertificadoService() {
+    }
 
     public static void inicializaCertificado(Certificado certificado) throws CertificadoException {
         cacertProprio = true;
@@ -48,7 +49,7 @@ public class CertificadoService {
             Protocol.registerProtocol("https", protocol);
 
             log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
-                    "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
+                            "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
                     "3.2",
                     "05/03/2024",
                     certificado.getCnpjCpf(),
@@ -59,7 +60,8 @@ public class CertificadoService {
                     cacertProprio ? "Default" : "Customizado",
                     certificado.getSslProtocol()));
 
-        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException | IOException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException |
+                 IOException e) {
             throw new CertificadoException(e.getMessage(), e);
         }
 
@@ -74,7 +76,7 @@ public class CertificadoService {
             certificado.setTipoCertificado(TipoCertificadoEnum.ARQUIVO_BYTES);
             setDadosCertificado(certificado, null);
         } catch (KeyStoreException e) {
-            throw new CertificadoException(ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO +                    e.getMessage(), e);
+            throw new CertificadoException(ERRO_AO_CARREGAR_INFORMACOES_DO_CERTIFICADO + e.getMessage(), e);
         }
 
         return certificado;
@@ -91,7 +93,7 @@ public class CertificadoService {
         }
 
         X509Certificate certificate = getCertificate(certificado, keyStore);
-        certificado.setCnpjCpf(getDocumentoFromCertificado(certificate.getSubjectX500Principal().getName()));
+        certificado.setCnpjCpf(getDocumentoFromCertificado(new String(certificate.getExtensionValue("2.5.29.17"))));
         Date dataValidade = dataValidade(certificate);
         certificado.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         certificado.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
@@ -259,28 +261,75 @@ public class CertificadoService {
                 "Certificado não encontrado com CNPJ/CPF : " +
                         cnpjCpf));
     }
+    public static String getDocumentoFromCertificado(String extensionValue) {
+        if (extensionValue != null) {
 
-    public static String getDocumentoFromCertificado(String texto) {
+            String retonoCNPJ = processaCNPJ(extensionValue);
 
-        // Primeiro, tenta encontrar CNPJs
-        Pattern patternCNPJ = Pattern.compile("(?<!\\d)\\d{14}(?!\\d)");
-        Matcher matcherCNPJ = patternCNPJ.matcher(texto);
+            if(!retonoCNPJ.isEmpty()){
+                return retonoCNPJ;
+            }
 
-        if (matcherCNPJ.find()) {
-            // Se encontrar um CNPJ, retorna ele
-            return matcherCNPJ.group();
-        } else {
-            // Se não encontrar CNPJs, tenta encontrar CPFs
-            Pattern patternCPF = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
-            Matcher matcherCPF = patternCPF.matcher(texto);
+            String retornoCpf = processaCPF(extensionValue);
 
-            if (matcherCPF.find()) {
-                // Se encontrar um CPF, retorna ele
-                return matcherCPF.group();
+            if (!retornoCpf.isEmpty()){
+                return retornoCpf;
+            }
+
+        }
+        return "";
+    }
+    private static String processaCPF(String extensionValue) {
+
+        String cpfIndicator = "\u0001";
+        String cpfTerminator = "\u0017";
+        int cpfStartIndex = extensionValue.indexOf(cpfIndicator) + 15; // Adiciona 14 para começar após o indicador
+        int cpfEndIndex = extensionValue.indexOf(cpfTerminator, cpfStartIndex); // Procura pelo terminador a partir do início do CPF
+
+        if(cpfStartIndex != -1 && cpfEndIndex != -1){
+            String cpf = extensionValue.substring(cpfStartIndex, cpfStartIndex + 11).replaceAll("[^\\d]", "");
+            String cpfValidado = validarDocumento(cpf);
+            if(!cpfValidado.isEmpty()){
+                return cpfValidado;
             }
         }
 
-        // Se não encontrar nenhum documento, retorna string vazia
+        return "";
+
+    }
+    private static String processaCNPJ(String extensionValue) {
+
+        int cnpjIndex = extensionValue.indexOf("\u0006\u0005`L\u0001\u0003\u0003");
+
+        if (cnpjIndex != -1) {
+
+            String documento = extensionValue.substring(cnpjIndex + 6, cnpjIndex + 25).replaceAll("[^\\d]", "");
+            String documentoValidado = validarDocumento(documento);
+
+            if (!documentoValidado.isEmpty()) {
+                return documentoValidado;
+            }
+            return documento;
+        }
+
+        return "";
+
+    }
+    private static String validarDocumento(String documento) {
+
+        Pattern patternCNPJ = Pattern.compile("\\d{14}");
+        Matcher matcher = patternCNPJ.matcher(documento);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+
+        Pattern patternCPF = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
+        Matcher matcherCPF = patternCPF.matcher(documento);
+
+        if (matcherCPF.find()) {
+            return matcherCPF.group();
+        }
         return "";
     }
 

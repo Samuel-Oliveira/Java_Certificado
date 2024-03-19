@@ -188,20 +188,22 @@ class CertificadoServiceTest {
 
     @Test
     void extraiCpfCnpjCorretamente() {
-        String textoCnpj = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CNPJ=07364617000135";
-        assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCnpj));
 
-        String textoCpf = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CPF=99999999999";
-        assertEquals("99999999999", CertificadoService.getDocumentoFromCertificado(textoCpf));
+        String textoCNPJ = "\u0004?�0?�?\u0019contato@contato.com.br�8\u0006\u0005`L\u0001\u0003\u0004�/\u0004-140819843318714380600000000000000000000000000�\u001D\u0006\u0005`L\u0001\u0003\u0002�\u0014\u0004\u0012JULIANA PERIM ZHOU�\u0019\u0006\u0005`L\u0001\u0003\u0003�\u0010\u0004\u000E26091227000183�\u0017\u0006\u0005`L\u0001\u0003\u0007�\u000E\u0004\f000000000000";
+        assertEquals("26091227000183", CertificadoService.getDocumentoFromCertificado(textoCNPJ));
 
-        String textoCnpjeCPF = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CNPJ=07364617000135, CPF=99999999999";
-        assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCnpjeCPF));
+        String textoCPF = "\u0004��0���=\u0006\u0005`L\u0001\u0003\u0001�4\u00132101019709999999999900000000000000000226148452SSPSP�\u0017\u0006\u0005`L\u0001\u0003\u0006�\u000E\u0013\f000000000000�)\u0006\u0005`L\u0001\u0003\u0005� \u0013\u001E8505444501910010401SAO PAULOSP";
+        assertEquals("99999999999", CertificadoService.getDocumentoFromCertificado(textoCPF));
 
-        String textoCpfECNPJ = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB, CPF=99999999999, CNPJ=07364617000135";
+        String textoCnpjeCPF = "\u0004��0���=\u0006\u0005`L\u0001\u0003\u0001�4\u00132101019701234567891200000000000000000226148452SSPSP�\u0017\u0006\u0005`L\u0001\u0003\u0006�\u000E\u0013\f000000000000�)\u0006\u0005`L\u0001\u0003\u0005� \u0013\u001E8505444501910010401SAO PAULOSP";
+        assertEquals("12345678912", CertificadoService.getDocumentoFromCertificado(textoCnpjeCPF));
+
+        String textoCpfECNPJ = "\u0004?�0?�?\u0019contato@contato.com.br�8\u0006\u0005`L\u0001\u0003\u0004�/\u0004-140819843318714380600000000000000000000000000�\u001D\u0006\u0005`L\u0001\u0003\u0002�\u0014\u0004\u0012JULIANA PERIM ZHOU�\u0019\u0006\u0005`L\u0001\u0003\u0003�\u0010\u0004\u000E07364617000135�\u0017\u0006\u0005`L\u0001\u0003\u0007�\u000E\u0004\f000000000000";
         assertEquals("07364617000135", CertificadoService.getDocumentoFromCertificado(textoCpfECNPJ));
 
-        String textoSemNenhumDocumento = "C=BR, O=ICP-Brasil, OU=Secretaria da Receita Federal do Brasil - RFB";
+        String textoSemNenhumDocumento = "";
         assertEquals("", CertificadoService.getDocumentoFromCertificado(textoSemNenhumDocumento));
+
     }
 
 }
