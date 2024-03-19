@@ -283,8 +283,8 @@ public class CertificadoService {
 
         String cpfIndicator = "\u0001";
         String cpfTerminator = "\u0017";
-        int cpfStartIndex = extensionValue.indexOf(cpfIndicator) + 15; // Adiciona 14 para começar após o indicador
-        int cpfEndIndex = extensionValue.indexOf(cpfTerminator, cpfStartIndex); // Procura pelo terminador a partir do início do CPF
+        int cpfStartIndex = extensionValue.indexOf(cpfIndicator) + 15;
+        int cpfEndIndex = extensionValue.indexOf(cpfTerminator, cpfStartIndex);
 
         if(cpfStartIndex != -1 && cpfEndIndex != -1){
             String cpf = extensionValue.substring(cpfStartIndex, cpfStartIndex + 11).replaceAll("[^\\d]", "");
