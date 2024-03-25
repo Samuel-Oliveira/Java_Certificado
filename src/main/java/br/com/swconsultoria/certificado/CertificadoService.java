@@ -1,6 +1,7 @@
 package br.com.swconsultoria.certificado;
 
 import br.com.swconsultoria.certificado.exception.CertificadoException;
+import br.com.swconsultoria.certificado.util.DocumentoUtil;
 import lombok.extern.java.Log;
 import org.apache.commons.httpclient.protocol.Protocol;
 
@@ -16,8 +17,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("WeakerAccess")
 @Log
@@ -50,8 +49,8 @@ public class CertificadoService {
 
             log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
                             "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                    "3.3",
-                    "20/03/2024",
+                    "3.4",
+                    "25/03/2024",
                     certificado.getCnpjCpf(),
                     certificado.getDataHoraVencimento(),
                     certificado.getNome().toUpperCase(),
@@ -93,7 +92,10 @@ public class CertificadoService {
         }
 
         X509Certificate certificate = getCertificate(certificado, keyStore);
-        certificado.setCnpjCpf(getDocumentoFromCertificado(new String(certificate.getExtensionValue("2.5.29.17"))));
+        certificado.setCnpjCpf(
+                Optional.ofNullable(certificate.getExtensionValue("2.5.29.17"))
+                        .flatMap(DocumentoUtil::getDocumentoFromCertificado)
+                        .orElse(""));
         Date dataValidade = dataValidade(certificate);
         certificado.setVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         certificado.setDataHoraVencimento(dataValidade.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
@@ -260,77 +262,6 @@ public class CertificadoService {
                 .startsWith(cnpjCpf)).findFirst().orElseThrow(() -> new CertificadoException(
                 "Certificado não encontrado com CNPJ/CPF : " +
                         cnpjCpf));
-    }
-    public static String getDocumentoFromCertificado(String extensionValue) {
-        if (extensionValue != null) {
-
-            String retonoCNPJ = processaCNPJ(extensionValue);
-
-            if(!retonoCNPJ.isEmpty()){
-                return retonoCNPJ;
-            }
-
-            String retornoCpf = processaCPF(extensionValue);
-
-            if (!retornoCpf.isEmpty()){
-                return retornoCpf;
-            }
-
-        }
-        return "";
-    }
-    private static String processaCPF(String extensionValue) {
-
-        String cpfIndicator = "\u0001";
-        String cpfTerminator = "\u0017";
-        int cpfStartIndex = extensionValue.indexOf(cpfIndicator) + 15;
-        int cpfEndIndex = extensionValue.indexOf(cpfTerminator, cpfStartIndex);
-
-        if(cpfStartIndex != -1 && cpfEndIndex != -1){
-            String cpf = extensionValue.substring(cpfStartIndex, cpfStartIndex + 11).replaceAll("[^\\d]", "");
-            String cpfValidado = validarDocumento(cpf);
-            if(!cpfValidado.isEmpty()){
-                return cpfValidado;
-            }
-        }
-
-        return "";
-
-    }
-    private static String processaCNPJ(String extensionValue) {
-
-        int cnpjIndex = extensionValue.indexOf("\u0006\u0005`L\u0001\u0003\u0003");
-
-        if (cnpjIndex != -1) {
-
-            String documento = extensionValue.substring(cnpjIndex + 6, cnpjIndex + 25).replaceAll("[^\\d]", "");
-            String documentoValidado = validarDocumento(documento);
-
-            if (!documentoValidado.isEmpty()) {
-                return documentoValidado;
-            }
-            return documento;
-        }
-
-        return "";
-
-    }
-    private static String validarDocumento(String documento) {
-
-        Pattern patternCNPJ = Pattern.compile("\\d{14}");
-        Matcher matcher = patternCNPJ.matcher(documento);
-
-        if (matcher.find()) {
-            return matcher.group();
-        }
-
-        Pattern patternCPF = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
-        Matcher matcherCPF = patternCPF.matcher(documento);
-
-        if (matcherCPF.find()) {
-            return matcherCPF.group();
-        }
-        return "";
     }
 
 }

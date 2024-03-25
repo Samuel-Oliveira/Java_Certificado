@@ -1,0 +1,76 @@
+
+name: Liberar nova versão
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  package:
+    runs-on: ubuntu-20.04
+    name: Empacotar executavel
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Ajustando Timezone
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "America/Sao_Paulo"
+          timezoneMacos: "America/Sao_Paulo"
+          timezoneWindows: "America/Sao_Paulo"
+
+      - name: Criando executavel
+        run: |
+          mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
+          mvn -B package --file pom.xml
+
+      - name: Criando pasta para External Jar
+        run: | 
+          mkdir java-certificado
+          cp target/*.jar java-certificado
+
+      - name: Set Release version env variable
+        run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r java-certificado-${{ env.RELEASE_VERSION }}.zip java-certificado
+
+      - name: Criando release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Subir executavel (zip) para release external jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./java-certificado-${{ env.RELEASE_VERSION }}.zip
+          asset_name: java-certificado-${{ env.RELEASE_VERSION }}.zip
+          asset_content_type: application/zip

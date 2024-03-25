@@ -19,7 +19,7 @@
         <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</developerConnection>
-        <tag>java_certificado-3.3</tag>
+        <tag>java_certificado-3.4</tag>
     </scm>
 
     <properties>
@@ -121,14 +121,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.1.1</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>none</phase>
                         <goals>
                             <goal>single</goal>
