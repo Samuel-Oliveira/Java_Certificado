@@ -41,8 +41,8 @@ jobs:
 
       - name: Set Release version env variable
         run: |
-          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-          IFS='.' read -ra VER <<< "${{ env.RELEASE_VERSION }}"
+          echo "X_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          IFS='.' read -ra VER <<< "${{ env.X_VERSION }}"
           MAJOR=${VER[0]}
           MINOR=${VER[1]}
           let "PREV_MINOR=MINOR-1"
@@ -52,7 +52,7 @@ jobs:
       - name: Criando executavel
         run: |
           mvn versions:set -DnewVersion=${{ env.RELEASE_VERSION }}
-          mvn mvn clean compile assembly:single --file pom.xml
+          mvn clean compile assembly:single --file pom.xml
 
       - name: Criando pasta para External Jar
         run: | 
