@@ -1,2 +1,3 @@
 # Notas de versão
-- Melhorias Logs, Correcao Consulta SP
+- Correcao de Null Pointer Exception ao lista Repositorio Windows.
+- Adicionado GitActions para gerar o Jar
