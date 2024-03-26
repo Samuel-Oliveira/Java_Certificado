@@ -25,6 +25,10 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v3.4 - 25/03/2024
+- Correcao de Null Pointer Exception ao lista Repositorio Windows.
+- Adicionado GitActions para gerar o Jar
+
 ## v3.3 - 20/03/2024
 - Refatoracao do Metodo de extracao CNPJ e CPF e geracao de cacert
 

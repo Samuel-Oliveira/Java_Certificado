@@ -4,8 +4,8 @@ name: Liberar nova versão
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
+    tags:
+      - '3.*'
 
 jobs:
 
@@ -35,19 +35,27 @@ jobs:
           timezoneMacos: "America/Sao_Paulo"
           timezoneWindows: "America/Sao_Paulo"
 
-      - name: Criando executavel
+      - name: Set Release version env variable
         run: |
           mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
-          mvn -B package --file pom.xml
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          IFS='.' read -ra VER <<< "${{ env.RELEASE_VERSION }}"
+          MAJOR=${VER[0]}
+          MINOR=${VER[1]}
+          let "PREV_MINOR=MINOR-1"
+          RELEASE_VERSION="${MAJOR}.${PREV_MINOR}"
+          echo "PREV_VERSION=$PREV_VERSION" >> $GITHUB_ENV
+
+      - name: Criando executavel
+        run: |
+          mvn versions:set -DnewVersion=${{ env.RELEASE_VERSION }}
+          mvn -B assembly:single --file pom.xml
 
       - name: Criando pasta para External Jar
         run: | 
           mkdir java-certificado
           cp target/*.jar java-certificado
 
-      - name: Set Release version env variable
-        run: |
-          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
       - uses: montudor/action-zip@v1
         with:
