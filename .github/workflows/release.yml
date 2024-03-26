@@ -40,6 +40,7 @@ jobs:
           mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
 
       - name: Set Release version env variable
+        shell: bash
         run: |
           echo "X_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
           IFS='.' read -ra VER <<< "${{ env.X_VERSION }}"
