@@ -35,24 +35,9 @@ jobs:
           timezoneMacos: "America/Sao_Paulo"
           timezoneWindows: "America/Sao_Paulo"
 
-      - name: Set Release version env variable
-        run: |
-          mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
-
-      - name: Set Release version env variable
-        shell: bash
-        run: |
-          echo "X_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-          IFS='.' read -ra VER <<< "${{ env.X_VERSION }}"
-          MAJOR=${VER[0]}
-          MINOR=${VER[1]}
-          let "PREV_MINOR=MINOR-1"
-          PREV_VERSION="${MAJOR}.${PREV_MINOR}"
-          echo "RELEASE_VERSION=$PREV_VERSION" >> $GITHUB_ENV
-
       - name: Criando executavel
         run: |
-          mvn versions:set -DnewVersion=${{ env.RELEASE_VERSION }}
+          mvn versions:set -DnewVersion=${{github.ref_name}}
           mvn clean compile assembly:single --file pom.xml
 
       - name: Criando pasta para External Jar
@@ -60,10 +45,9 @@ jobs:
           mkdir java-certificado
           cp target/*.jar java-certificado
 
-
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r java-certificado-${{ env.RELEASE_VERSION }}.zip java-certificado
+          args: zip -qq -r java-certificado-${{github.ref_name}}.zip java-certificado
 
       - name: Criando release
         uses: actions/create-release@v1
@@ -83,6 +67,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./java-certificado-${{ env.RELEASE_VERSION }}.zip
-          asset_name: java-certificado-${{ env.RELEASE_VERSION }}.zip
+          asset_path: ./java-certificado-${{github.ref_name}}.zip
+          asset_name: java-certificado-${{github.ref_name}}.zip
           asset_content_type: application/zip
