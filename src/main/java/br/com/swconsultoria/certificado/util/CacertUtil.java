@@ -209,6 +209,7 @@ public class CacertUtil {
         listaWebServices.add("wshomo.pelotas.rs.gov.br");
         listaWebServices.add("ws.pelotas.rs.gov.br");
         listaWebServices.add("tributacao.vilavelha.es.gov.br");
+        listaWebServices.add("serra.es.gov.br");
 
         return listaWebServices;
     }
