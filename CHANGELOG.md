@@ -1,2 +1,2 @@
 # Notas de versão
-- Atualizado CACERT (ERRO MS)
+- Atualizado CACERT
