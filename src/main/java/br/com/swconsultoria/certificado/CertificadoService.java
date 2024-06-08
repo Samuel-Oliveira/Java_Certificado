@@ -49,8 +49,8 @@ public class CertificadoService {
 
             log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
                             "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                    "3.5",
-                    "19/04/2024",
+                    "3.6",
+                    "08/06/2024",
                     certificado.getCnpjCpf(),
                     certificado.getDataHoraVencimento(),
                     certificado.getNome().toUpperCase(),
