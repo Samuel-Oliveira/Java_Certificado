@@ -21,16 +21,16 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-class SocketFactoryDinamico implements ProtocolSocketFactory {
+public class SocketFactoryDinamico implements ProtocolSocketFactory {
 
     private static final char[] SENHA_CACERT = "changeit".toCharArray();
     private final KeyStore keyStore;
     private final String alias;
     private final String senha;
     private final InputStream fileCacerts;
-    private SSLContext ssl;
+    private final SSLContext ssl;
 
-    SocketFactoryDinamico(KeyStore keyStore, String alias, String senha, InputStream fileCacerts, String sslProtocol) throws KeyManagementException,
+    public SocketFactoryDinamico(KeyStore keyStore, String alias, String senha, InputStream fileCacerts, String sslProtocol) throws KeyManagementException,
             CertificateException,
             NoSuchAlgorithmException, KeyStoreException, IOException {
         this.keyStore = keyStore;
@@ -66,15 +66,19 @@ class SocketFactoryDinamico implements ProtocolSocketFactory {
         return sslContext;
     }
 
-    private KeyManager[] createKeyManagers() {
+    public KeyManager[] createKeyManagers() {
         return new KeyManager[]{new AliasKeyManager(keyStore, alias, senha)};
     }
 
-    private TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+    public TrustManager[] createTrustManagers() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         trustStore.load(fileCacerts, SENHA_CACERT);
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
+    }
+
+    public SSLContext getSsl() {
+        return ssl;
     }
 }
