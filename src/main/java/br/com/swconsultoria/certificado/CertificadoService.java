@@ -49,8 +49,8 @@ public class CertificadoService {
 
             log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
                             "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                    "3.6",
-                    "08/06/2024",
+                    "3.7",
+                    "11/07/2024",
                     certificado.getCnpjCpf(),
                     certificado.getDataHoraVencimento(),
                     certificado.getNome().toUpperCase(),
@@ -144,15 +144,23 @@ public class CertificadoService {
 
     }
 
+    public static List<Certificado> listaCertificadosWindows(boolean listarVencidos) throws CertificadoException {
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_WINDOWS, listarVencidos);
+    }
+
+    public static List<Certificado> listaCertificadosMac(boolean listarVencidos) throws CertificadoException {
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_MAC, listarVencidos);
+    }
+
     public static List<Certificado> listaCertificadosWindows() throws CertificadoException {
-        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_WINDOWS);
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_WINDOWS, true);
     }
 
     public static List<Certificado> listaCertificadosMac() throws CertificadoException {
-        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_MAC);
+        return listaCertificadosRepositorio(TipoCertificadoEnum.REPOSITORIO_MAC, true);
     }
 
-    private static List<Certificado> listaCertificadosRepositorio(TipoCertificadoEnum tipo) throws CertificadoException {
+    private static List<Certificado> listaCertificadosRepositorio(TipoCertificadoEnum tipo, boolean listarVencidos) throws CertificadoException {
 
         List<Certificado> listaCert = new ArrayList<>();
         Certificado cert = new Certificado();
@@ -167,7 +175,13 @@ public class CertificadoService {
                     certificado.setTipoCertificado(tipo);
                     certificado.setNome(aliasKey);
                     setDadosCertificado(certificado, ks);
-                    listaCert.add(certificado);
+                    if (listarVencidos) {
+                        listaCert.add(certificado);
+                    } else {
+                        if (certificado.isValido()) {
+                            listaCert.add(certificado);
+                        }
+                    }
                 }
             }
         } catch (KeyStoreException ex) {
