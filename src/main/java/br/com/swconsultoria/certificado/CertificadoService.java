@@ -3,6 +3,7 @@ package br.com.swconsultoria.certificado;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.certificado.util.DocumentoUtil;
 import lombok.extern.java.Log;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.protocol.Protocol;
 
 import java.io.FileNotFoundException;
@@ -36,34 +37,25 @@ public class CertificadoService {
     }
 
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
-
-        try {
-
-            KeyStore keyStore = getKeyStore(
-                    Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO)));
-            SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(),
-                    Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo.")),
-                    certificado.getSslProtocol());
-            Protocol protocol = new Protocol("https", socketFactory, 443);
-            Protocol.registerProtocol("https", protocol);
-
-            log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
-                            "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                    "3.7",
-                    "11/07/2024",
-                    certificado.getCnpjCpf(),
-                    certificado.getDataHoraVencimento(),
-                    certificado.getNome().toUpperCase(),
-                    certificado.getTipoCertificado().toString(),
-                    certificado.getArquivo(),
-                    cacertProprio ? "Default" : "Customizado",
-                    certificado.getSslProtocol()));
-
-        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException |
-                 IOException e) {
-            throw new CertificadoException(e.getMessage(), e);
+        if (certificado == null) {
+            throw new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO);
         }
 
+        if (certificado.isModoAntigoSSL()) {
+            Protocol.registerProtocol("https", getProtocoloCertificado(certificado, cacert));
+        }
+
+        log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
+                        "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
+                "3.7",
+                "11/07/2024",
+                certificado.getCnpjCpf(),
+                certificado.getDataHoraVencimento(),
+                certificado.getNome().toUpperCase(),
+                certificado.getTipoCertificado().toString(),
+                certificado.getArquivo(),
+                cacertProprio ? "Default" : "Customizado",
+                certificado.getSslProtocol()));
     }
 
     public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
@@ -278,4 +270,53 @@ public class CertificadoService {
                         cnpjCpf));
     }
 
+    private static Protocol getProtocoloCertificado(final Certificado certificado, InputStream cacert) throws CertificadoException {
+        try {
+            KeyStore keyStore = getKeyStore(
+                    Optional.ofNullable(certificado).orElseThrow(() -> new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO)));
+            SocketFactoryDinamico socketFactory = new SocketFactoryDinamico(keyStore, certificado.getNome(), certificado.getSenha(),
+                    Optional.ofNullable(cacert).orElseThrow(() -> new IllegalArgumentException("Cacert não pode ser nulo.")),
+                    certificado.getSslProtocol());
+
+            return new Protocol("https", socketFactory, 443);
+
+        } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | CertificateException |
+                 IOException e) {
+            throw new CertificadoException(e.getMessage(), e);
+        }
+    }
+
+
+    //FIXME Validar Samuel: Talvez não seja aqui o melhor local, coloquei inicialmente porque é acessível de todos que consomem a lib de certificado.
+    /**
+     * Utiliza cacert default da biblioteca.
+     * @see #getHttpsClient(Certificado, String, InputStream)
+     */
+    public static HttpClient getHttpsClient(Certificado certificado, String url) throws CertificadoException {
+        return getHttpsClient(certificado, url, CertificadoService.class.getResourceAsStream("/cacert"));
+    }
+
+    /**
+     * <p>Utilizar o {@link org.apache.commons.httpclient.HttpClient} gerado nesse método para evitar conflitos de
+     * certificados nas conexões HTTPS/TLS/SSL, especialmente em ambientes multithread.</p>
+     *
+     * <p>O consumidor desse método deverá usar esse cliente no stub desejado</p>
+     * exemplo:
+     * <pre>
+     *     HttpClient client = getHttpsClient(certificado, url);
+     *     NFeStatusServico4Stub stub = new NFeStatusServico4Stub(url);
+     *     stub._getServiceClient().getOptions().setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpclient);
+     * </pre>
+     * @param certificado {@link Certificado} a ser utilizado na conexão.
+     * @param url {@link String} a ser executada na conexão https
+     * @param cacert {@link java.io.InputStream} contendo o cacert
+     * @return {@link org.apache.commons.httpclient.HttpClient} configurado para a URL e Certificados informados.
+     * @throws CertificadoException
+     */
+    public static HttpClient getHttpsClient(Certificado certificado, String url, final InputStream cacert) throws CertificadoException {
+        Protocol protocol = getProtocoloCertificado(certificado, cacert);
+        HttpClient httpclient = new HttpClient();
+        httpclient.getHostConfiguration().setHost(url, 443, protocol);
+        return httpclient;
+    }
 }

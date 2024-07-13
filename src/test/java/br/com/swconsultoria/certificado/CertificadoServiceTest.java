@@ -4,12 +4,18 @@ import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.certificado.util.DocumentoUtil;
 import mockit.Mock;
 import mockit.MockUp;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -207,4 +213,34 @@ class CertificadoServiceTest {
 
     }
 
+    /**
+     * <p>Testa a compatibilidade com consumidores "antigos", que ainda não estão no "novo modelo" de controle do
+     * certificado nas conexões TLS/SSL. Isso permitirá uma "migração gradual" dos consumidores.</p>
+     * Por padrão será utilizado o novo modo, cada consumidor irá precisar explicitamente escolher o "modo antigo SSL",
+     * caso deseje.
+     */
+    @Test
+    void compatibilidadeComModoAntigoSSL() throws FileNotFoundException, CertificadoException {
+        Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CPF, SENHA);
+        certificado.setModoAntigoSSL(true);
+        CertificadoService.inicializaCertificado(certificado);
+
+        String alias = getHttpsProtocoloAlias("https");
+
+        assertEquals("certificado cpf teste", alias);
+    }
+
+    private String getHttpsProtocoloAlias(String protocolId)  {
+        try {
+            Protocol registeredProtocol = Protocol.getProtocol(protocolId);
+            ProtocolSocketFactory factory = registeredProtocol.getSocketFactory();
+
+            Class<?> clazz = factory.getClass();
+            Field getAliasField = clazz.getDeclaredField("alias");
+            getAliasField.setAccessible(true);
+            return (String) getAliasField.get(factory);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
