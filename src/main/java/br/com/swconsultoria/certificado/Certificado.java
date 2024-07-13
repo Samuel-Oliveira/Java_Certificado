@@ -32,9 +32,11 @@ public class Certificado {
     private String sslProtocol;
     private BigInteger numeroSerie;
     private Provider provider;
+    private boolean modoAntigoSSL;
 
     public Certificado() {
         this.setSslProtocol(TLSV_1_2);
+        this.setModoAntigoSSL(true); //TODO Temporariamente o padrão será true, até validação do Bruno S.
     }
 
     @Override
