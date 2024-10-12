@@ -4,12 +4,9 @@ import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.certificado.util.DocumentoUtil;
 import mockit.Mock;
 import mockit.MockUp;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
@@ -33,11 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CertificadoServiceTest {
 
-    private final String CERTIFICADO_CPF = "NaoUsar_CPF.pfx";
-    private final String CERTIFICADO_CNPJ = "NaoUsar_CNPJ.pfx";
-    private final String CPF = "99999999999";
-    private final String CNPJ = "99999999999999";
-    private final String SENHA = "123456";
+    private static final String CERTIFICADO_CPF = "NaoUsar_CPF.pfx";
+    private static final String CERTIFICADO_CNPJ = "NaoUsar_CNPJ.pfx";
+    private static final String CPF = "99999999999";
+    private static final String CNPJ = "99999999999999";
+    private static final String SENHA = "123456";
 
     @Test
     void certificadoPfxParametroNull() {
@@ -178,10 +175,7 @@ class CertificadoServiceTest {
     }
 
     @Test
-    void inicaConfiguracoesParametrosNull() throws IOException, CertificadoException {
-
-        InputStream cacert = CertificadoServiceTest.class.getResourceAsStream("cacert");
-        Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CNPJ, SENHA);
+    void inicaConfiguracoesParametrosNull() {
 
         //Certificado Null
         Assertions.assertThrows(IllegalArgumentException.class, () ->
@@ -216,13 +210,13 @@ class CertificadoServiceTest {
     /**
      * <p>Testa a compatibilidade com consumidores "antigos", que ainda não estão no "novo modelo" de controle do
      * certificado nas conexões TLS/SSL. Isso permitirá uma "migração gradual" dos consumidores.</p>
-     * Por padrão será utilizado o novo modo, cada consumidor irá precisar explicitamente escolher o "modo antigo SSL",
-     * caso deseje.
+     * </p>Por padrão será utilizado o modo antigo, cada consumidor irá precisar explicitamente escolher o
+     * "modo multithreading", caso deseje.<p>
      */
     @Test
-    void compatibilidadeComModoAntigoSSL() throws FileNotFoundException, CertificadoException {
+    void compatibilidadeModoMultithreadingDesativado() throws FileNotFoundException, CertificadoException {
         Certificado certificado = CertificadoService.certificadoPfx(CERTIFICADO_CPF, SENHA);
-        certificado.setModoAntigoSSL(true);
+        certificado.setModoMultithreading(false);
         CertificadoService.inicializaCertificado(certificado);
 
         String alias = getHttpsProtocoloAlias("https");

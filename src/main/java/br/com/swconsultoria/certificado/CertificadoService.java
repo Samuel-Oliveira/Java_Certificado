@@ -36,12 +36,27 @@ public class CertificadoService {
         inicializaCertificado(certificado, CertificadoService.class.getResourceAsStream("/cacert"));
     }
 
+    /**
+     * 
+     * <p>Inicializa o certificado para a conexão SSL/TLS.</p>
+     * <p><b>Importante: </b>Quando NÃO estiver com o modo multithreading ativado (certificado.isModoMultithreading())
+     * será registrado e utilizado um único certificado em todas as conexões até a próxima chamada à
+     * {@link #inicializaCertificado(Certificado, InputStream)}. É o modo antigo e padrão da biblioteca.</p>
+     * <p>Quando estiver com o modo multithreading ativo o consumidor deverá obter um
+     * {@link org.apache.commons.httpclient.HttpClient} com protocolo e certificado exclusivos para ele usando o 
+     * método {@link #getHttpsClient(Certificado, String, InputStream)}</p>
+     *
+     * @param certificado {@link Certificado} a ser utilizado na conexão.
+     * @param cacert  {@link java.io.InputStream} contendo o cacert
+     * @throws CertificadoException
+     */
+    
     public static void inicializaCertificado(Certificado certificado, InputStream cacert) throws CertificadoException {
         if (certificado == null) {
             throw new IllegalArgumentException(CERTIFICADO_NAO_PODE_SER_NULO);
         }
 
-        if (certificado.isModoAntigoSSL()) {
+        if (!certificado.isModoMultithreading()) {
             Protocol.registerProtocol("https", getProtocoloCertificado(certificado, cacert));
         }
 
@@ -286,8 +301,6 @@ public class CertificadoService {
         }
     }
 
-
-    //FIXME Validar Samuel: Talvez não seja aqui o melhor local, coloquei inicialmente porque é acessível de todos que consomem a lib de certificado.
     /**
      * Utiliza cacert default da biblioteca.
      * @see #getHttpsClient(Certificado, String, InputStream)
@@ -298,7 +311,7 @@ public class CertificadoService {
 
     /**
      * <p>Utilizar o {@link org.apache.commons.httpclient.HttpClient} gerado nesse método para evitar conflitos de
-     * certificados nas conexões HTTPS/TLS/SSL, especialmente em ambientes multithread.</p>
+     * certificados nas conexões HTTPS/TLS/SSL, especialmente em ambientes multithreading.</p>
      *
      * <p>O consumidor desse método deverá usar esse cliente no stub desejado</p>
      * exemplo:
