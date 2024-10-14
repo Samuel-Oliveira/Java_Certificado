@@ -61,16 +61,17 @@ public class CertificadoService {
         }
 
         log.info(String.format("JAVA-CERTIFICADO | Samuel Oliveira | samuel@swconsultoria.com.br " +
-                        "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s",
-                "3.7",
-                "11/07/2024",
+                        "| VERSAO=%s | DATA_VERSAO=%s | CNPJ/CPF=%s | VENCIMENTO=%s | ALIAS=%s | TIPO=%s | CAMINHO=%s | CACERT=%s | SSL=%s | Multithreading=%s",
+                "3.8",
+                "14/10/2024",
                 certificado.getCnpjCpf(),
                 certificado.getDataHoraVencimento(),
                 certificado.getNome().toUpperCase(),
                 certificado.getTipoCertificado().toString(),
                 certificado.getArquivo(),
                 cacertProprio ? "Default" : "Customizado",
-                certificado.getSslProtocol()));
+                certificado.getSslProtocol(),
+                certificado.isModoMultithreading()));
     }
 
     public static Certificado certificadoPfxBytes(byte[] certificadoBytes, String senha) throws CertificadoException {
