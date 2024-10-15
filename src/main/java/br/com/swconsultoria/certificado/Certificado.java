@@ -32,9 +32,11 @@ public class Certificado {
     private String sslProtocol;
     private BigInteger numeroSerie;
     private Provider provider;
+    private boolean isModoMultithreading;
 
     public Certificado() {
         this.setSslProtocol(TLSV_1_2);
+        this.setModoMultithreading(false);
     }
 
     @Override
