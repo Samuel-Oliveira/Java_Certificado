@@ -25,6 +25,13 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v3.8 - 30/11/2024
+- Atualizado CACERT
+- Adicionado modo Multithreading
+
+## v3.7 - 15/10/2024
+- Atualizado CACERT
+
 ## v3.6 - 08/06/2024
 - Gerado Novo Cacert
 
