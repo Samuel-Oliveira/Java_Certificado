@@ -25,7 +25,7 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
-## v3.9 - 30/11/2024
+## v3.9 - 05/04/2025
 - Atualizado CACERT
 
 ## v3.8 - 30/11/2024
