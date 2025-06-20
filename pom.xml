@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>3.10</version>
+    <version>3.11-SNAPSHOT</version>
     <name>Java_Certificado</name>
     <description>Api java para gerenciamento de certificados digitais</description>
     <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
@@ -19,7 +19,7 @@
         <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
         <connection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</connection>
         <developerConnection>scm:git:git@github.com:Samuel-Oliveira/Java_Certificado.git</developerConnection>
-        <tag>java_certificado-3.10</tag>
+        <tag>java_certificado-a-3.7</tag>
     </scm>
 
     <properties>
