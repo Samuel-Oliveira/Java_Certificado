@@ -1,4 +1,4 @@
-# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.10/jar)
+# Java_Certificado [![MIT License](https://img.shields.io/github/license/Samuel-Oliveira/Java_Certificado.svg)](https://github.com/Samuel-Oliveira/Java_Certificado/blob/master/LICENSE) [![Maven Central](https://img.shields.io/maven-central/v/br.com.swconsultoria/java_certificado.svg?label=Maven%20Central)](https://search.maven.org/artifact/br.com.swconsultoria/java_certificado/3.12/jar)
 
 Projeto Java de Gerenciamentos de Certificado Digital
 
@@ -16,7 +16,7 @@ Para Iniciar :
 <dependency>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>3.10</version>
+    <version>3.12</version>
 </dependency>
 ```
 
@@ -25,6 +25,12 @@ Veja a [Wiki](https://Samuel-Oliveira.github.io/Java_Certificado/), para ter um 
 ________________________________________________________________________________________________
 # Historico de Versões
 
+## v3.12 - 06/07/2025
+- Atualizado CACERT
+
+## v3.11 - 01/07/2025
+- Atualizado CACERT
+- 
 ## v3.10 - 20/06/2025
 - Atualizado CACERT
 
