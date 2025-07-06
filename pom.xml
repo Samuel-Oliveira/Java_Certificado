@@ -31,7 +31,7 @@
         <!-- Versões -->
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <junit-jupiter-engine.version>5.13.3</junit-jupiter-engine.version>
-        <jmockit.version>1.50</jmockit.version>
+        <jmockit.version>1.49</jmockit.version>
         <lombok.version>1.18.38</lombok.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
