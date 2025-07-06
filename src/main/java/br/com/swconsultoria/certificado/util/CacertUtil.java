@@ -5,6 +5,8 @@ package br.com.swconsultoria.certificado.util;
 
 import javax.net.ssl.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -38,14 +40,14 @@ public class CacertUtil {
             char[] senha = SENHA_PADRAO_CACERT.toCharArray();
             File arquivoCacert = new File(PASTA_JAVA + "/jre/lib/security/cacerts");
 
-            InputStream in = new FileInputStream(arquivoCacert);
+            InputStream in = Files.newInputStream(arquivoCacert.toPath());
             KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
             ks.load(in, senha);
             in.close();
 
             lista.forEach(endereco -> get(endereco, ks));
 
-            OutputStream out = new FileOutputStream(CacertUtil.DESTINO_CACERT);
+            OutputStream out = Files.newOutputStream(Paths.get(CacertUtil.DESTINO_CACERT));
             ks.store(out, senha);
             out.close();
 
