@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.swconsultoria</groupId>
     <artifactId>java_certificado</artifactId>
-    <version>3.13-SNAPSHOT</version>
+    <version>3.12-SNAPSHOT</version>
     <name>Java_Certificado</name>
     <description>Api java para gerenciamento de certificados digitais</description>
     <url>https://github.com/Samuel-Oliveira/Java_Certificado</url>
@@ -43,12 +43,12 @@
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
     </properties>
 
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus</id>-->
-<!--            <url>https://central.sonatype.com</url>-->
-<!--        </repository>-->
-<!--    </distributionManagement>-->
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus</id>
+            <url>https://central.sonatype.com</url>
+        </repository>
+    </distributionManagement>
 
     <developers>
         <developer>
