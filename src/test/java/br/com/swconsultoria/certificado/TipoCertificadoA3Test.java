@@ -1,6 +1,10 @@
 package br.com.swconsultoria.certificado;
 
+import br.com.swconsultoria.certificado.exception.CertificadoException;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -26,5 +30,6 @@ class TipoCertificadoA3Test {
         assertEquals("c:/windows/system32/OcsCryptoki.dll", TipoCertificadoA3.OBERTHUR.getDll());
         assertEquals("c:/windows/system32/eps2003csp11.dll", TipoCertificadoA3.ENTER_SAFE.getDll());
     }
+
 
 }

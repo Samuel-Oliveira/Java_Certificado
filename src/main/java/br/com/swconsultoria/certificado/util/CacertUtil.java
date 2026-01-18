@@ -24,7 +24,7 @@ public class CacertUtil {
 
     //ALTERE AQUI PARA GERAR
     private static final String DESTINO_CACERT = "cacert";
-    private static final String PASTA_JAVA = "C:/Program Files/Java/jdk1.8.0_301";
+    private static final String PASTA_JAVA = "D:/Dev/jdks/8";
 
     //NAO ALTERE ESSA SENHA
     private static final String SENHA_PADRAO_CACERT = "changeit";
@@ -119,12 +119,10 @@ public class CacertUtil {
         listaWebServices.add("nfehomolog.sefaz.pe.gov.br");
         listaWebServices.add("homologacao.nfe.sefa.pr.gov.br");
         listaWebServices.add("nfe-homologacao.sefazrs.rs.gov.br");
-        listaWebServices.add("cad.sefazrs.rs.gov.br");
+        listaWebServices.add("cad.svrs.rs.gov.br");
         listaWebServices.add("homologacao.nfe.fazenda.sp.gov.br");
         listaWebServices.add("hom.sefazvirtual.fazenda.gov.br");
         listaWebServices.add("nfe-homologacao.svrs.rs.gov.br");
-        listaWebServices.add("cad.svrs.rs.gov.br");
-        listaWebServices.add("hom.svc.fazenda.gov.br");
         listaWebServices.add("hom.nfe.fazenda.gov.br");
 
         // NFE PRODUCAO
@@ -141,7 +139,6 @@ public class CacertUtil {
         listaWebServices.add("nfe.fazenda.sp.gov.br");
         listaWebServices.add("www.sefazvirtual.fazenda.gov.br");
         listaWebServices.add("nfe.svrs.rs.gov.br");
-        listaWebServices.add("www.svc.fazenda.gov.br");
         listaWebServices.add("www.nfe.fazenda.gov.br");
         listaWebServices.add("www1.nfe.fazenda.gov.br");
 
@@ -155,6 +152,7 @@ public class CacertUtil {
         listaWebServices.add("nfce-homologacao.sefazrs.rs.gov.br");
         listaWebServices.add("homologacao.nfce.fazenda.sp.gov.br");
         listaWebServices.add("nfce-homologacao.svrs.rs.gov.br");
+        listaWebServices.add("nfewebhomolog.sefaz.go.gov.br");
 
         // NFCE PRODUCAO
         listaWebServices.add("nfce.sefaz.am.gov.br");
@@ -166,6 +164,8 @@ public class CacertUtil {
         listaWebServices.add("nfce.sefazrs.rs.gov.br");
         listaWebServices.add("nfce.fazenda.sp.gov.br");
         listaWebServices.add("nfce.svrs.rs.gov.br");
+        listaWebServices.add("nfce.set.rn.gov.br");
+        listaWebServices.add("nfeweb.sefaz.go.gov.br");
 
         // CTE HOMOLOGACAO
         listaWebServices.add("hcte.fazenda.mg.gov.br");
@@ -197,22 +197,31 @@ public class CacertUtil {
         listaWebServices.add("webservices.envio.esocial.gov.br");
 
         //EFD-REINF Homologação
-        listaWebServices.add("preprodefdreinf.receita.fazenda.gov.br");
+        listaWebServices.add("pre-reinf.receita.economia.gov.br");
 
         //EFD-REINF Produção
-        listaWebServices.add("reinf.receita.fazenda.gov.br");
+        listaWebServices.add("reinf.receita.economia.gov.br");
 
         // GTIN
         listaWebServices.add("wshomo.pelotas.rs.gov.br");
         // GTIN
         listaWebServices.add("ws.pelotas.rs.gov.br");
 
-        //NFSE
+        //NFSE DIVERSAS
         listaWebServices.add("wshomo.pelotas.rs.gov.br");
         listaWebServices.add("ws.pelotas.rs.gov.br");
         listaWebServices.add("tributacao.vilavelha.es.gov.br");
         listaWebServices.add("serra.es.gov.br");
         listaWebServices.add("isscuritiba.curitiba.pr.gov.br");
+
+        //NFSE NACIONAL
+        listaWebServices.add("adn.nfse.gov.br");
+        listaWebServices.add("adn.producaorestrita.nfse.gov.br");
+        listaWebServices.add("sefin.nfse.gov.br");
+        listaWebServices.add("sefin.producaorestrita.nfse.gov.br");
+
+        //CFF
+        listaWebServices.add("cff.svrs.rs.gov.br");
 
         return listaWebServices;
     }
