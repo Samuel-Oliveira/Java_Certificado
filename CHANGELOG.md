@@ -1,2 +1,2 @@
 # Notas de versão
-- Atualizado CACERT
+- Atualizado CACERT 
