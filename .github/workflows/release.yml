@@ -10,7 +10,7 @@ on:
 jobs:
 
   package:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     name: Empacotar executavel
     steps:
       - uses: actions/checkout@v2
@@ -37,8 +37,8 @@ jobs:
 
       - name: Criando executavel
         run: |
-          mvn versions:set -DnewVersion=${{github.ref_name}}
-          mvn clean compile assembly:single --file pom.xml
+          mvn versions:set -DnewVersion=${{ github.ref_name }}
+          mvn -B package -Passembly --file pom.xml
 
       - name: Criando pasta para External Jar
         run: | 
