@@ -213,6 +213,7 @@ public class CacertUtil {
         listaWebServices.add("tributacao.vilavelha.es.gov.br");
         listaWebServices.add("serra.es.gov.br");
         listaWebServices.add("isscuritiba.curitiba.pr.gov.br");
+        listaWebServices.add("nfe.prefeitura.sp.gov.br");
 
         //NFSE NACIONAL
         listaWebServices.add("adn.nfse.gov.br");
