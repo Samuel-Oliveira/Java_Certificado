@@ -202,6 +202,12 @@ class CertificadoServiceTest {
         String textoCpfECNPJ = "\u0004?�0?�?\u0019contato@contato.com.br�8\u0006\u0005`L\u0001\u0003\u0004�/\u0004-140819843318714380600000000000000000000000000�\u001D\u0006\u0005`L\u0001\u0003\u0002�\u0014\u0004\u0012JULIANA PERIM ZHOU�\u0019\u0006\u0005`L\u0001\u0003\u0003�\u0010\u0004\u000E07364617000135�\u0017\u0006\u0005`L\u0001\u0003\u0007�\u000E\u0004\f000000000000";
         assertEquals(Optional.of("07364617000135"), DocumentoUtil.getDocumentoFromCertificado(textoCpfECNPJ.getBytes()));
 
+        String textoCpfECNPJAlfaFull = "\u0004?�0?�?\u0019contato@contato.com.br�8\u0006\u0005`L\u0001\u0003\u0004�/\u0004-140819843318714380600000000000000000000000000�\u001D\u0006\u0005`L\u0001\u0003\u0002�\u0014\u0004\u0012JULIANA PERIM ZHOU�\u0019\u0006\u0005`L\u0001\u0003\u0003�\u0010\u0004\u000EAX79WMN938WW28�\u0017\u0006\u0005`L\u0001\u0003\u0007�\u000E\u0004\f000000000000";
+        assertEquals(Optional.of("AX79WMN938WW28"), DocumentoUtil.getDocumentoFromCertificado(textoCpfECNPJAlfaFull.getBytes()));
+
+        String textoCpfECNPJAlfaFilialNumerica = "\u0004?�0?�?\u0019contato@contato.com.br�8\u0006\u0005`L\u0001\u0003\u0004�/\u0004-140819843318714380600000000000000000000000000�\u001D\u0006\u0005`L\u0001\u0003\u0002�\u0014\u0004\u0012JULIANA PERIM ZHOU�\u0019\u0006\u0005`L\u0001\u0003\u0003�\u0010\u0004\u000EWPBN6RDP000139�\u0017\u0006\u0005`L\u0001\u0003\u0007�\u000E\u0004\f000000000000";
+        assertEquals(Optional.of("WPBN6RDP000139"), DocumentoUtil.getDocumentoFromCertificado(textoCpfECNPJAlfaFilialNumerica.getBytes()));
+
         String textoSemNenhumDocumento = "";
         assertEquals(Optional.empty(), DocumentoUtil.getDocumentoFromCertificado(textoSemNenhumDocumento.getBytes()));
 

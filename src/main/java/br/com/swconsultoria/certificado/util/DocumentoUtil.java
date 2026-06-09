@@ -12,7 +12,7 @@ public class DocumentoUtil {
     private static final Pattern PATTERN_CPF = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
     private static final int CPF_LENGTH = 11;
     private static final int CPF_OFFSET = 15;
-    private static final Pattern PATTERN_CNPJ = Pattern.compile("\\d{14}");
+    private static final Pattern PATTERN_CNPJ = Pattern.compile("[\\dA-Z]{12}[\\d]{2}");
     private static final String CNPJ_INDICATOR = "\u0006\u0005`L\u0001\u0003\u0003";
     private static final int CNPJ_OFFSET = 6;
     private static final int CNPJ_LENGTH = 25;
@@ -42,7 +42,7 @@ public class DocumentoUtil {
     private static Optional<String> processaCNPJ(String extensionValue) {
         int cnpjIndex = extensionValue.indexOf(CNPJ_INDICATOR);
         if (cnpjIndex != -1) {
-            String cnpj = extrairNumeros(extensionValue.substring(cnpjIndex + CNPJ_OFFSET, cnpjIndex + CNPJ_LENGTH));
+            String cnpj = extrairCnpjAlfaNumerico(extensionValue.substring(cnpjIndex + CNPJ_OFFSET, cnpjIndex + CNPJ_LENGTH));
             return validarDocumento(cnpj);
         }
         return Optional.empty();
@@ -50,6 +50,10 @@ public class DocumentoUtil {
 
     private static String extrairNumeros(String valor) {
         return valor.replaceAll("[^\\d]", "");
+    }
+
+    private static String extrairCnpjAlfaNumerico(String valor) {
+        return valor.replaceAll("[^\\dA-Z]", "");
     }
 
     private static Optional<String> validarDocumento(String documento) {
