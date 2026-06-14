@@ -1,2 +1,3 @@
 # Notas de versão
-- Atualizado CACERT 
+- Atualizado CACERT
+- Ajustes na verificacao para CNPJ Alfanumérico
